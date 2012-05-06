@@ -1,0 +1,5 @@
+this is my try to make coffee script 's version of three.js and implement some good example of using it
+
+1. install rvm && install ruby 1.9.3
+2. clone git
+3. cd three.js && bundle && middleman build && middleman server -e production
