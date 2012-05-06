@@ -1,3 +1,4 @@
 /nbproject
 build
 .sass-cache
+Gemfile.lock
