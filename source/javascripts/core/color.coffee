@@ -1,10 +1,10 @@
 # @author mr.doob / http://mrdoob.com/
 # @autor aladjev.andrew@gmail.com
 
-class window.Three.Color extends window.Three
+class window.Three::Color
   constructor: (hex) ->
     @set_hex hex if hex
-    return @
+    this
 
   @r: 1, @g: 1, @b: 1
   
@@ -12,37 +12,37 @@ class window.Three.Color extends window.Three
     @r = color.r
     @g = color.g
     @b = color.b
-    return @
+    this
     
   copy_gamma_to_linear: (color) ->
     @r = color.r * color.r
     @g = color.g * color.g
     @b = color.b * color.b
-    return @
+    this
     
   copy_linear_to_gamma: (color) ->
     @r = Math.sqrt color.r
     @g = Math.sqrt color.g
     @b = Math.sqrt color.b
-    return @
+    this
     
   convert_gamma_to_linear: ->
     @r = @r * @r
     @g = @g * @g
     @b = @b * @b
-    return @
+    this
     
   convert_linear_to_gamma: ->
     @r = Math.sqrt @r
     @g = Math.sqrt @g
     @b = Math.sqrt @b
-    return @
+    this
     
   set_rgb: (r, g, b) ->
     @r = @r
     @g = @g
     @b = @b
-    return @
+    this
 
   set_hsv: (h, s, v) ->
     # based on MochiKit implementation by Bob Ippolito
@@ -83,7 +83,7 @@ class window.Three.Color extends window.Three
           @g = p
           @b = q
           
-    return @
+    this
 
   set_hex: (hex) ->
     hex = Math.floor hex
@@ -91,14 +91,14 @@ class window.Three.Color extends window.Three
     @g = (hex >> 8 & 255) / 255
     @b = (hex & 255) / 255
     
-    return @
+    this
     
   lerp_self: (color, alpha) ->
     @r += (color.r - @r) * alpha
     @g += (color.g - @g) * alpha
     @b += (color.b - @b) * alpha
     
-    return @
+    this
     
   get_hex: ->
     Math.floor(@r * 255) << 16 ^ Math.floor(@g * 255) << 8 ^ Math.floor(@b * 255)

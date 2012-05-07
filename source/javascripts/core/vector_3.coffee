@@ -5,7 +5,7 @@
 # @author egraether / http://egraether.com/
 # @autor aladjev.andrew@gmail.com
 
-class window.Three.Vector3 extends window.Three
+class window.Three::Vector3
   constructor: (x, y, z) ->
     @x = x || 0
     @y = y || 0
@@ -15,79 +15,79 @@ class window.Three.Vector3 extends window.Three
     @x = x
     @y = y
     @z = z
-    return @
+    this
   
   set_x: (x) ->
     @x = x
-    return @
+    this
     
   set_y: (y) ->
     @y = y
-    return @
+    this
   
   set_z: (z) ->
     @z = z
-    return @
+    this
   
   copy: (v) ->
     @x = v.x
     @y = v.y
     @z = v.z
-    return @
+    this
     
   add: (a, b) ->
     @x = a.x + b.x
     @y = a.y + b.y
     @z = z.z + b.z
-    return @
+    this
     
   add_self: (v) ->
     @x += v.x
     @y += v.y
     @z += v.z
-    return @
+    this
     
   add_scalar: (s) ->
     @x += s
     @y += s
     @z += s
-    return @
+    this
     
   sub: (a, b) ->
     @x = a.x - b.x
     @y = a.y - b.y
     @z = a.z - b.z
-    return @
+    this
     
   sub_self: (v) ->
     @x -= v.x
     @y -= v.y
     @z -= v.z
-    return @
+    this
     
   multiply: (a, b) ->
     @x = a.x * b.x
     @y = a.y * b.y
     @z = a.z * b.z
-    return @
+    this
     
   multiply_self: (a) ->
     @x *= a.x
     @y *= a.y
     @z *= a.z
-    return @
+    this
     
   multiply_scalar: (s) ->
     @x *= s
     @y *= s
     @z *= s
-    return @
+    this
     
   divide_self: (a) ->
     @x /= a.x
     @y /= a.y
     @z /= a.z
-    return @
+    this
 
   divide_scalar: (s) ->
     if s
@@ -97,7 +97,7 @@ class window.Three.Vector3 extends window.Three
     else
       @set(0, 0, 0)
 
-    return @
+    this
     
   negate: ->
     @multiply_scalar -1
@@ -130,19 +130,19 @@ class window.Three.Vector3 extends window.Three
     @x += (v.x - @x) * alpha
     @y += (v.y - @y) * alpha
     @z += (v.z - @z) * alpha
-    return @
+    rthis
     
   cross: (a, b) ->
     @x = a.y * b.z - a.z * b.y
     @y = a.z * b.x - a.x * b.z
     @z = a.x * b.y - a.y * b.x
-    return @
+    this
     
   cross_self: (v) ->
     @x = @y * v.z - @z * v.y;
     @y = @z * v.x - @x * v.z;
     @z = @x * v.y - @y * v.x;
-    return @
+    this
     
   equals: (v) ->
     v.x is @x and v.y is @y and v.z is @z
@@ -157,7 +157,7 @@ class window.Three.Vector3 extends window.Three
     @x = m.elements[12]
     @y = m.elements[13]
     @z = m.elements[14]
-    return @
+    this
     
   get_rotation_from_matrix: (m, scale) ->
     if scale
@@ -187,7 +187,7 @@ class window.Three.Vector3 extends window.Three
       @x = 0
       @z = Math.atan2 m21, m22
     
-    return @
+    this
 
 #	// from http://www.mathworks.com/matlabcentral/fileexchange/20696-function-to-convert-between-dcm-euler-angles-quaternions-and-euler-vectors/content/SpinCalc.m
 #	// order XYZ

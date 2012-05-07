@@ -1,7 +1,7 @@
 # @author alteredq / http://alteredqualia.com/
 # @autor aladjev.andrew@gmail.com
 
-class window.Three.Clock extends window.Three
+class window.Three::Clock
   constructor: (auto_start) ->
     if auto_start
       @auto_start = auto_start

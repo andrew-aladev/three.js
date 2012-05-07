@@ -4,7 +4,7 @@
 class window.Three
   @rev: "49"
 
-if !window.Int32Array
+unless window.Int32Array
 	window.Int32Array = Array
 	window.Float32Array = Array
 
@@ -17,9 +17,9 @@ last_time = 0
 vendors = ["ms", "moz", "webkit", "o"]
 for x in vendors when !window.requestAnimationFrame
   window.requestAnimationFrame = window[vendors[x] + "RequestAnimationFrame"]
-  window.cancelAnimationFrame = window[vendors[x] + "CancelAnimationFrame"] || window[vendors[x] + "CancelRequestAnimationFrame"]
+  window.cancelAnimationFrame = window[vendors[x] + "CancelAnimationFrame"] or window[vendors[x] + "CancelRequestAnimationFrame"]
 
-if !window.requestAnimationFrame
+unless window.requestAnimationFrame
   window.requestAnimationFrame = (callback, element) ->
     currrent_time = Date.now()
     time_to_call = Math.max(0, 16 - (current_time - last_time))
@@ -28,6 +28,6 @@ if !window.requestAnimationFrame
       callback(currTime + timeToCall)
     , timeToCall)
 
-if !window.cancelAnimationFrame
+unless window.cancelAnimationFrame
   window.cancelAnimationFrame = (id) ->
     clearTimeout id
