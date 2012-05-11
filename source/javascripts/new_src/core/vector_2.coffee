@@ -2,7 +2,7 @@
 # @author philogb / http://blog.thejit.org/
 # @author egraether / http://egraether.com/
 # @author zz85 / http://www.lab4games.net/zz85/blog
-# @autor aladjev.andrew@gmail.com
+# @author aladjev.andrew@gmail.com
 
 class Vector2
   constructor: (x, y) ->

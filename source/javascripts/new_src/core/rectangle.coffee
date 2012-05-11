@@ -1,206 +1,126 @@
 # @author mr.doob / http://mrdoob.com/
-# @autor aladjev.andrew@gmail.com
+# @author aladjev.andrew@gmail.com
 
-class window.Three::Rectangle
-  contructor: ->
-    @left     = 0
-    @top      = 0
-    @right    = 0
-    @bottom   = 0
-    @width    = 0
-    @height   = 0
-    @is_empty = true
-
+class Rectangle
+  constructor: ->
+    @_left      = undefined
+    @_top       = undefined
+    @_right     = undefined
+    @_bottom    = undefined
+    @_width     = undefined
+    @_height    = undefined
+    @_isEmpty   = true
+  
   resize: ->
-    @width  = @right  - @left
-    @height = @bottom - @top
-    
-  get_x: ->
-    @left
+    @_width   = @_right - @_left
+    @_height  = @_bottom - @_top
+  
+  getX: ->
+    @_left
 
-  get_y: ->
-    @top
+  getY: ->
+    @_top
 
-  get_width: ->
-    @width
+  getWidth: ->
+    @_width
 
-  get_height: ->
-    @height
+  getHeight: ->
+    @_height
 
-  get_left: ->
-    @left
+  getLeft: ->
+    @_left
 
-  get_top: ->
-    @top
+  getTop: ->
+    @_top
 
-  get_right: ->
-    @right
+  getRight: ->
+    @_right
 
-  get_bottom: ->
-    @bottom
+  getBottom: ->
+    @_bottom
 
   set: (left, top, right, bottom) ->
-    @is_empty = false
-    @left     = left
-    @top      = top
-    @right    = right
-    @bottom   = bottom
+    @_isEmpty   = false
+    @_left      = left
+    @_top       = top
+    @_right     = right
+    @_bottom    = bottom
     @resize()
 
-  add_point: (x, y) ->
-    if @is_empty
-      @is_empty = false
-      @left     = x
-      @top      = y
-      @right    = x
-      @bottom   = y
-      @resize()
+  addPoint: (x, y) ->
+    if @_isEmpty
+      @_isEmpty   = false
+      @_left      = x
+      @_top       = y
+      @_right     = x
+      @_bottom    = y
     else
-      @left     = x if @left > x
-      @top      = y if @top > y
-      @right    = x if @right < x
-      @bottom   = y if @bottom < y
-      @resize()
+      @_left    = (if @_left < x    then @_left else x)     # Math.min( _left, x )
+      @_top     = (if @_top < y     then @_top else y)      # Math.min( _top, y )
+      @_right   = (if @_right > x   then @_right else x)    # Math.max( _right, x )
+      @_bottom  = (if @_bottom > y  then @_bottom else y)   # Math.max( _bottom, y )
+    @resize()
 
-  add_3_points: (x1, y1, x2, y2, x3, y3) ->
-    if @is_empty
-      @is_empty = false
-      
-      if x1 < x2
-        if x1 < x3
-          @left = x1
-        else
-          @left = x3
-      else
-        if x2 < x3
-          @left = x2
-        else
-          @left = x3
-          
-      if y1 < y2
-        if y1 < y3
-          @top = y1
-        else
-          @top = y3 
-      else
-        if y2 < y3
-          @top = y2
-        else
-          @top = y3
-
-      if x1 > x2
-        if x1 > x3
-          @right = x1
-        else
-          @right = x3
-      else
-        if x2 > x3
-          @right = x2
-        else
-          @right = x3
-
-      if y1 > y2
-        if y1 > y3
-          @bottom = y1
-        else
-          @bottom = y3
-      else
-        if y2 > y3
-          @bottom = y2
-        else
-          @bottom = y3
-      @resize()
+  add3Points: (x1, y1, x2, y2, x3, y3) ->
+    if @_isEmpty
+      @_isEmpty   = false
+      @_left      = (if x1 < x2 then (if x1 < x3 then x1 else x3) else (if x2 < x3 then x2 else x3))
+      @_top       = (if y1 < y2 then (if y1 < y3 then y1 else y3) else (if y2 < y3 then y2 else y3))
+      @_right     = (if x1 > x2 then (if x1 > x3 then x1 else x3) else (if x2 > x3 then x2 else x3))
+      @_bottom    = (if y1 > y2 then (if y1 > y3 then y1 else y3) else (if y2 > y3 then y2 else y3))
     else
-      if x1 < x2
-        if x1 < x3 and x1 < @left
-          @left = x1
-        else if x3 < @left
-          @left = x3
-      else
-        if x2 < x3 and x2 < @left
-          @left = x2
-        else if x3 < @left
-          @left = x3
-          
-      if y1 < y2
-        if y1 < y3 and y1 < @top
-          @top = y1
-        else if y3 < @top
-          @top = y3
-      else
-        if y2 < y3 and y2 < @top
-          @top = y2
-        else if y3 < @top
-          @top = y3
-    
-      if x1 > x2
-        if x1 > x3 and x1 > @right
-          @right = x1
-        else if x3 > @right
-          @right = x3
-      else
-        if x2 > x3 and x2 > @right
-          @right = x2
-        else if x3 > @right
-          @right = x3
-      
-      if y1 > y2
-        if y1 > y3 and y1 > @bottom
-          @bottom = y1
-        else if y3 > @bottom
-          @bottom = y3
-      else
-        if y2 > y3 and y2 > @bottom
-          @bottom = y2
-        else if y3 > @bottom
-          @bottom = y3
-      
-      @resize()
+      @_left    = (if x1 < x2 then (if x1 < x3 then (if x1 < @_left   then x1 else @_left)    else (if x3 < @_left    then x3 else @_left))   else (if x2 < x3 then (if x2 < @_left   then x2 else @_left)    else (if x3 < @_left then x3   else @_left)))
+      @_top     = (if y1 < y2 then (if y1 < y3 then (if y1 < @_top    then y1 else @_top)     else (if y3 < @_top     then y3 else @_top))    else (if y2 < y3 then (if y2 < @_top    then y2 else @_top)     else (if y3 < @_top then y3    else @_top)))
+      @_right   = (if x1 > x2 then (if x1 > x3 then (if x1 > @_right  then x1 else @_right)   else (if x3 > @_right   then x3 else @_right))  else (if x2 > x3 then (if x2 > @_right  then x2 else @_right)   else (if x3 > @_right then x3  else @_right)))
+      @_bottom  = (if y1 > y2 then (if y1 > y3 then (if y1 > @_bottom then y1 else @_bottom)  else (if y3 > @_bottom  then y3 else @_bottom)) else (if y2 > y3 then (if y2 > @_bottom then y2 else @_bottom)  else (if y3 > @_bottom then y3 else @_bottom)))
+    @resize()
 
-  add_rectangle: (r) ->
-    if @is_empty
-      @is_empty  = false
-      @left     = r.get_left()
-      @top      = r.get_top()
-      @right    = r.get_right()
-      @bottom   = r.get_bottom()
-      @resize()
+  addRectangle: (r) ->
+    if @_isEmpty
+      @_isEmpty = false
+      @_left    = r.getLeft()
+      @_top     = r.getTop()
+      @_right   = r.getRight()
+      @_bottom  = r.getBottom()
     else
-      @left     = r.get_left()    if @left    > r.get_left()
-      @top      = r.get_top()     if @top     > r.get_top()
-      @right    = r.get_right()   if @right   < r.get_right()
-      @bottom   = r.get_bottom()  if @bottom  < r.get_bottom()
-      @resize()
+      @_left    = (if @_left < r.getLeft()      then @_left else r.getLeft())       # Math.min(_left, r.getLeft() )
+      @_top     = (if @_top < r.getTop()        then @_top else r.getTop())         # Math.min(_top, r.getTop() )
+      @_right   = (if @_right > r.getRight()    then @_right else r.getRight())     # Math.max(_right, r.getRight() )
+      @_bottom  = (if @_bottom > r.getBottom()  then @_bottom else r.getBottom())   # Math.max(_bottom, r.getBottom() )
+    @resize()
 
   inflate: (v) ->
-    @left   -= v
-    @top    -= v
-    @right  += v
-    @bottom += v
+    @_left    -= v
+    @_top     -= v
+    @_right   += v
+    @_bottom  += v
     @resize()
 
-  min_self: (r) ->
-    @left     = r.get_left()    if @left    > r.get_left()
-    @top      = r.get_top()     if @top     > r.get_top()
-    @right    = r.get_right()   if @right   < r.get_right()
-    @bottom   = r.get_bottom()  if @bottom  < r.get_bottom()
+  minSelf: (r) ->
+    @_left    = (if @_left > r.getLeft()      then @_left else r.getLeft())       # Math.max( _left, r.getLeft() )
+    @_top     = (if @_top > r.getTop()        then @_top else r.getTop())         # Math.max( _top, r.getTop() )
+    @_right   = (if @_right < r.getRight()    then @_right else r.getRight())     # Math.min( _right, r.getRight() )
+    @_bottom  = (if @_bottom < r.getBottom()  then @_bottom else r.getBottom())   # Math.min( _bottom, r.getBottom() )
     @resize()
 
   intersects: (r) ->
     # http://gamemath.com/2011/09/detecting-whether-two-boxes-overlap/
-    return false  if @right   < r.get_left()
-    return false  if @left    > r.get_right()
-    return false  if @bottom  < r.get_top()
-    return false  if @top     > r.get_bottom()
+    return false  if @_right < r.getLeft()
+    return false  if @_left > r.getRight()
+    return false  if @_bottom < r.getTop()
+    return false  if @_top > r.getBottom()
     true
 
-  empty: ->
-    @is_empty = true
-    @left     = 0
-    @top      = 0
-    @right    = 0
-    @bottom   = 0
+  empty = ->
+    @_isEmpty   = true
+    @_left      = 0
+    @_top       = 0
+    @_right     = 0
+    @_bottom    = 0
     @resize()
 
-  is_empty: ->
-    @is_empty
+  isEmpty: ->
+    @_isEmpty
+
+namespace "THREE", (exports) ->
+  exports.Rectangle = Rectangle

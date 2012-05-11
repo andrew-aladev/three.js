@@ -1,5 +1,5 @@
 # @author alteredq / http://alteredqualia.com/
-# @autor aladjev.andrew@gmail.com
+# @author aladjev.andrew@gmail.com
 
 class Clock
   constructor: (autoStart) ->

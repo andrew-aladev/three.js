@@ -1,130 +1,134 @@
 # @author mr.doob / http://mrdoob.com/
 # @author mikael emtinger / http://gomo.se/
 # @author alteredq / http://alteredqualia.com/
-# @autor aladjev.andrew@gmail.com
+# @author aladjev.andrew@gmail.com
 
-class window.Three::Object3D
+class Object3D
   constructor: ->
-    @id           = Three::object_3d_count++
+    @id           = THREE.Object3DCount++
     @name         = ""
-    @parent       = undefined
+    @parent       = `undefined`
     @children     = []
-    @up           = new Three::Vector3 0, 1, 0
-    @position     = new Three::Vector3()
-    @rotation     = new Three::Vector3()
-    @euler_order  = "XYZ"
-    @scale        = new Three::Vector3 1, 1, 1
-    @double_sided = false
-    @flip_sided   = false
-    @render_depth = null
+    @up           = new THREE.Vector3(0, 1, 0)
+    @position     = new THREE.Vector3()
+    @rotation     = new THREE.Vector3()
+    @eulerOrder   = "XYZ"
+    @scale        = new THREE.Vector3(1, 1, 1)
+    @doubleSided  = false
+    @flipSided    = false
+    @renderDepth  = null
+    @rotationAutoUpdate = true
     
-    @rotation_auto_update       = true
-    @matrix                     = new Three::Matrix4()
-    @matrix_world               = new Three::Matrix4()
-    @matrix_rotation_world      = new Three::Matrix4()
-    @matrix_auto_update         = true
-    @matrix_world_needs_update  = true
-    @quaternion                 = new Three::Quaternion()
-    @use_quaternion             = false
-    
-    @bound_radius               = 0.0
-    @bound_radius_scale         = 1.0
-    @visible                    = true
-    @cast_shadow                = false
-    @receive_shadow             = false
-    @frustum_culled             = true
-    @_vector                    = new Three::Vector3()
+    @matrix                 = new THREE.Matrix4()
+    @matrixWorld            = new THREE.Matrix4()
+    @matrixRotationWorld    = new THREE.Matrix4()
+    @matrixAutoUpdate       = true
+    @matrixWorldNeedsUpdate = true
+    @quaternion         = new THREE.Quaternion()
+    @useQuaternion      = false
+    @boundRadius        = 0.0
+    @boundRadiusScale   = 1.0
+    @visible            = true
+    @castShadow         = false
+    @receiveShadow      = false
+    @frustumCulled      = true
+    @_vector            = new THREE.Vector3()
 
-  apply_matrix: (matrix) ->
+  applyMatrix: (matrix) ->
     @matrix.multiply matrix, @matrix
-    @scale.get_scale_from_matrix @matrix
-    @rotation.get_rotation_from_matrix @matrix, @scale
-    @position.get_position_from_matrix @matrix
+    @scale.getScaleFromMatrix @matrix
+    @rotation.getRotationFromMatrix @matrix, @scale
+    @position.getPositionFromMatrix @matrix
 
   translate: (distance, axis) ->
-    @matrix.rotate_axis axis
-    @position.add_self axis.multiply_scalar(distance)
+    @matrix.rotateAxis axis
+    @position.addSelf axis.multiplyScalar(distance)
 
-  translate_x: (distance) ->
+  translateX: (distance) ->
     @translate distance, @_vector.set(1, 0, 0)
 
-  translate_y: (distance) ->
+  translateY: (distance) ->
     @translate distance, @_vector.set(0, 1, 0)
 
-  translate_z: (distance) ->
+  translateZ: (distance) ->
     @translate distance, @_vector.set(0, 0, 1)
 
-  look_at: (vector) ->
+  lookAt: (vector) ->
     # TODO: Add hierarchy support
-    @matrix.look_at vector, @position, @up
-    @rotation.get_rotation_from_matrix @matrix  if @rotation_auto_update
+    @matrix.lookAt vector, @position, @up
+    @rotation.getRotationFromMatrix @matrix  if @rotationAutoUpdate
 
   add: (object) ->
     if object is this
-      console.warn "Three::Object3D.add: An object can't be added as a child of itself."
+      console.warn "THREE.Object3D.add: An object can't be added as a child of itself."
       return
-    if object instanceof Three::Object3D
-      object.parent.remove object if object.parent isnt undefined
+    if object instanceof THREE.Object3D
+      object.parent.remove object  if object.parent isnt `undefined`
       object.parent = this
       @children.push object
       
       # add to scene
       scene = this
-      scene = scene.parent  while scene.parent isnt undefined
-      scene.__add_object object  if scene isnt undefined and scene instanceof Three::Scene
+      scene = scene.parent  while scene.parent isnt `undefined`
+      scene.__addObject object  if scene isnt `undefined` and scene instanceof THREE.Scene
 
   remove: (object) ->
-    index = @children.indexOf object
+    index = @children.indexOf(object)
     if index isnt -1
-      object.parent = undefined
+      object.parent = `undefined`
       @children.splice index, 1
       
       # remove from scene
       scene = this
-      scene = scene.parent  while scene.parent isnt undefined
-      scene.__remove_object object  if scene isnt undefined and scene instanceof Three::Scene
+      scene = scene.parent  while scene.parent isnt `undefined`
+      scene.__removeObject object  if scene isnt `undefined` and scene instanceof THREE.Scene
 
-  get_child_by_name: (name, recursive) ->
-    cl    = undefined
+  getChildByName: (name, recursive) ->
+    c = undefined
+    cl = undefined
     child = undefined
-    c     = 0
-    cl    = @children.length
+    c = 0
+    cl = @children.length
 
     while c < cl
       child = @children[c]
-      return child if child.name is name
+      return child  if child.name is name
       if recursive
-        child = child.get_child_by_name name, recursive
-        return child if child isnt undefined
+        child = child.getChildByName(name, recursive)
+        return child  if child isnt `undefined`
       c++
-    undefined
+    `undefined`
 
-  update_matrix: ->
-    @matrix.set_position @position
-    if @use_quaternion
-      @matrix.set_rotation_from_quaternion @quaternion
+  updateMatrix: ->
+    @matrix.setPosition @position
+    if @useQuaternion
+      @matrix.setRotationFromQuaternion @quaternion
     else
-      @matrix.set_rotation_from_euler @rotation, @euler_order
+      @matrix.setRotationFromEuler @rotation, @eulerOrder
     if @scale.x isnt 1 or @scale.y isnt 1 or @scale.z isnt 1
       @matrix.scale @scale
-      @bound_radius_scale = Math.max @scale.x, Math.max(@scale.y, @scale.z)
-    @matrix_world_needs_update = true
+      @boundRadiusScale = Math.max(@scale.x, Math.max(@scale.y, @scale.z))
+    @matrixWorldNeedsUpdate = true
 
-  update_matrix_world: (force) ->
-    @matrix_auto_update and @update_matrix()
+  updateMatrixWorld: (force) ->
+    @matrixAutoUpdate and @updateMatrix()
     
     # update matrixWorld
-    if @matrix_world_needs_update or force
+    if @matrixWorldNeedsUpdate or force
       if @parent
-        @matrix_world.multiply @parent.matrix_world, @matrix
+        @matrixWorld.multiply @parent.matrixWorld, @matrix
       else
-        @matrix_world.copy @matrix
-      @matrix_world_needs_update = false
+        @matrixWorld.copy @matrix
+      @matrixWorldNeedsUpdate = false
       force = true
     
     # update children
-    length = @children.length
-    for i in [0...length]
-      @children[i].update_matrix_world force
+    i = 0
+    l = @children.length
+    while i < l
+      @children[i].updateMatrixWorld force
+      i++
 
-Three::object_3d_count = 0
+namespace "THREE", (exports) ->
+  exports.Object3D      = Object3D
+  exports.Object3DCount = 0

@@ -1,6 +1,6 @@
 # @author mrdoob / http://mrdoob.com/
 # @author alteredq / http://alteredqualia.com/
-# @autor aladjev.andrew@gmail.com
+# @author aladjev.andrew@gmail.com
 
 class Frustum
   constructor: ->

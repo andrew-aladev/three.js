@@ -6,69 +6,55 @@
 # @author alteredq / http://alteredqualia.com/
 # @author mikael emtinger / http://gomo.se/
 # @author timknip / http://www.floorplanner.com/
-# @autor aladjev.andrew@gmail.com
+# @author aladjev.andrew@gmail.com
 
-class window.Three::Matrix4
+class Matrix4
   constructor: (n11, n12, n13, n14, n21, n22, n23, n24, n31, n32, n33, n34, n41, n42, n43, n44) ->
     @elements = new Float32Array(16)
-    @set(
-      n11 or 1, n12 or 0, n13 or 0, n14 or 0
-      n21 or 0, n22 or 1, n23 or 0, n24 or 0
-      n31 or 0, n32 or 0, n33 or 1, n34 or 0
-      n41 or 0, n42 or 0, n43 or 0, n44 or 1
-    )
-  
+    @set (if (n11 isnt `undefined`) then n11 else 1), n12 or 0, n13 or 0, n14 or 0, n21 or 0, (if (n22 isnt `undefined`) then n22 else 1), n23 or 0, n24 or 0, n31 or 0, n32 or 0, (if (n33 isnt `undefined`) then n33 else 1), n34 or 0, n41 or 0, n42 or 0, n43 or 0, (if (n44 isnt `undefined`) then n44 else 1)
+
   set: (n11, n12, n13, n14, n21, n22, n23, n24, n31, n32, n33, n34, n41, n42, n43, n44) ->
-    te = @elements
-    te[0]  = n11
-    te[4]  = n12
-    te[8]  = n13
-    te[12] = n14
-    te[1]  = n21
-    te[5]  = n22
-    te[9]  = n23
-    te[13] = n24
-    te[2]  = n31
-    te[6]  = n32
-    te[10] = n33
-    te[14] = n34
-    te[3]  = n41
-    te[7]  = n42
-    te[11] = n43
-    te[15] = n44
+    te      = @elements
+    te[0]   = n11
+    te[4]   = n12
+    te[8]   = n13
+    te[12]  = n14
+    te[1]   = n21
+    te[5]   = n22
+    te[9]   = n23
+    te[13]  = n24
+    te[2]   = n31
+    te[6]   = n32
+    te[10]  = n33
+    te[14]  = n34
+    te[3]   = n41
+    te[7]   = n42
+    te[11]  = n43
+    te[15]  = n44
     this
 
   identity: ->
-    @set(
-      1, 0, 0, 0
-      0, 1, 0, 0
-      0, 0, 1, 0
-      0, 0, 0, 1
-    )
+    @set 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1
     this
 
   copy: (m) ->
     me = m.elements
-    @set(
-      me[0], me[4], me[8],  me[12]
-      me[1], me[5], me[9],  me[13]
-      me[2], me[6], me[10], me[14]
-      me[3], me[7], me[11], me[15]
-    )
+    @set me[0], me[4], me[8], me[12], me[1], me[5], me[9], me[13], me[2], me[6], me[10], me[14], me[3], me[7], me[11], me[15]
     this
 
-  look_at: (eye, target, up) ->
-    te = @elements
-    x = Three::Matrix4.__v1
-    y = Three::Matrix4.__v2
-    z = Three::Matrix4.__v3
+  lookAt: (eye, target, up) ->
+    te  = @elements
+    x   = THREE.Matrix4.__v1
+    y   = THREE.Matrix4.__v2
+    z   = THREE.Matrix4.__v3
     z.sub(eye, target).normalize()
-    z.z = 1 if z.length() is 0
+    z.z = 1  if z.length() is 0
     x.cross(up, z).normalize()
     if x.length() is 0
       z.x += 0.0001
       x.cross(up, z).normalize()
     y.cross z, x
+    
     te[0]   = x.x
     te[4]   = y.x
     te[8]   = z.x
@@ -81,9 +67,9 @@ class window.Three::Matrix4
     this
 
   multiply: (a, b) ->
-    te = @elements
-    ae = a.elements
-    be = b.elements
+    ae  = a.elements
+    be  = b.elements
+    te  = @elements
     a11 = ae[0]
     a12 = ae[4]
     a13 = ae[8]
@@ -116,39 +102,41 @@ class window.Three::Matrix4
     b42 = be[7]
     b43 = be[11]
     b44 = be[15]
-    te[0]  = a11 * b11 + a12 * b21 + a13 * b31 + a14 * b41
-    te[4]  = a11 * b12 + a12 * b22 + a13 * b32 + a14 * b42
-    te[8]  = a11 * b13 + a12 * b23 + a13 * b33 + a14 * b43
-    te[12] = a11 * b14 + a12 * b24 + a13 * b34 + a14 * b44
-    te[1]  = a21 * b11 + a22 * b21 + a23 * b31 + a24 * b41
-    te[5]  = a21 * b12 + a22 * b22 + a23 * b32 + a24 * b42
-    te[9]  = a21 * b13 + a22 * b23 + a23 * b33 + a24 * b43
-    te[13] = a21 * b14 + a22 * b24 + a23 * b34 + a24 * b44
-    te[2]  = a31 * b11 + a32 * b21 + a33 * b31 + a34 * b41
-    te[6]  = a31 * b12 + a32 * b22 + a33 * b32 + a34 * b42
-    te[10] = a31 * b13 + a32 * b23 + a33 * b33 + a34 * b43
-    te[14] = a31 * b14 + a32 * b24 + a33 * b34 + a34 * b44
-    te[3]  = a41 * b11 + a42 * b21 + a43 * b31 + a44 * b41
-    te[7]  = a41 * b12 + a42 * b22 + a43 * b32 + a44 * b42
-    te[11] = a41 * b13 + a42 * b23 + a43 * b33 + a44 * b43
-    te[15] = a41 * b14 + a42 * b24 + a43 * b34 + a44 * b44
+    
+    te[0]   = a11 * b11 + a12 * b21 + a13 * b31 + a14 * b41
+    te[4]   = a11 * b12 + a12 * b22 + a13 * b32 + a14 * b42
+    te[8]   = a11 * b13 + a12 * b23 + a13 * b33 + a14 * b43
+    te[12]  = a11 * b14 + a12 * b24 + a13 * b34 + a14 * b44
+    te[1]   = a21 * b11 + a22 * b21 + a23 * b31 + a24 * b41
+    te[5]   = a21 * b12 + a22 * b22 + a23 * b32 + a24 * b42
+    te[9]   = a21 * b13 + a22 * b23 + a23 * b33 + a24 * b43
+    te[13]  = a21 * b14 + a22 * b24 + a23 * b34 + a24 * b44
+    te[2]   = a31 * b11 + a32 * b21 + a33 * b31 + a34 * b41
+    te[6]   = a31 * b12 + a32 * b22 + a33 * b32 + a34 * b42
+    te[10]  = a31 * b13 + a32 * b23 + a33 * b33 + a34 * b43
+    te[14]  = a31 * b14 + a32 * b24 + a33 * b34 + a34 * b44
+    te[3]   = a41 * b11 + a42 * b21 + a43 * b31 + a44 * b41
+    te[7]   = a41 * b12 + a42 * b22 + a43 * b32 + a44 * b42
+    te[11]  = a41 * b13 + a42 * b23 + a43 * b33 + a44 * b43
+    te[15]  = a41 * b14 + a42 * b24 + a43 * b34 + a44 * b44
     this
 
-  multiply_self: (m) ->
+  multiplySelf: (m) ->
     @multiply this, m
 
-  multiply_to_array: (a, b, r) ->
+  multiplyToArray: (a, b, r) ->
+    te = @elements
     @multiply a, b
-    r[0] = te[0]
-    r[1] = te[1]
-    r[2] = te[2]
-    r[3] = te[3]
-    r[4] = te[4]
-    r[5] = te[5]
-    r[6] = te[6]
-    r[7] = te[7]
-    r[8] = te[8]
-    r[9] = te[9]
+    r[0]  = te[0]
+    r[1]  = te[1]
+    r[2]  = te[2]
+    r[3]  = te[3]
+    r[4]  = te[4]
+    r[5]  = te[5]
+    r[6]  = te[6]
+    r[7]  = te[7]
+    r[8]  = te[8]
+    r[9]  = te[9]
     r[10] = te[10]
     r[11] = te[11]
     r[12] = te[12]
@@ -157,7 +145,7 @@ class window.Three::Matrix4
     r[15] = te[15]
     this
 
-  multiply_scalar: (s) ->
+  multiplyScalar: (s) ->
     te = @elements
     te[0]   *= s
     te[4]   *= s
@@ -177,18 +165,18 @@ class window.Three::Matrix4
     te[15]  *= s
     this
 
-  multiply_vector_3: (v) ->
-    te  = @elements
-    vx  = v.x
-    vy  = v.y
-    vz  = v.z
+  multiplyVector3: (v) ->
+    te = @elements
+    vx = v.x
+    vy = v.y
+    vz = v.z
     d   = 1 / (te[3] * vx + te[7] * vy + te[11] * vz + te[15])
     v.x = (te[0] * vx + te[4] * vy + te[8] * vz + te[12]) * d
     v.y = (te[1] * vx + te[5] * vy + te[9] * vz + te[13]) * d
     v.z = (te[2] * vx + te[6] * vy + te[10] * vz + te[14]) * d
     v
 
-  multiply_vector_4: (v) ->
+  multiplyVector4: (v) ->
     te  = @elements
     vx  = v.x
     vy  = v.y
@@ -200,7 +188,7 @@ class window.Three::Matrix4
     v.w = te[3] * vx + te[7] * vy + te[11] * vz + te[15] * vw
     v
 
-  rotate_axis: (v) ->
+  rotateAxis: (v) ->
     te  = @elements
     vx  = v.x
     vy  = v.y
@@ -211,23 +199,20 @@ class window.Three::Matrix4
     v.normalize()
     v
 
-  cross_vector: (a) ->
+  crossVector: (a) ->
     te  = @elements
-    v   = new Three::Vector4()
+    v   = new THREE.Vector4()
     v.x = te[0] * a.x + te[4] * a.y + te[8] * a.z + te[12] * a.w
     v.y = te[1] * a.x + te[5] * a.y + te[9] * a.z + te[13] * a.w
     v.z = te[2] * a.x + te[6] * a.y + te[10] * a.z + te[14] * a.w
-    if a.w
-      v.w = te[3] * a.x + te[7] * a.y + te[11] * a.z + te[15] * a.w
-    else
-      v.w = 1
+    v.w = (if (a.w) then te[3] * a.x + te[7] * a.y + te[11] * a.z + te[15] * a.w else 1)
     v
 
   determinant: ->
-    #   TODO: make this more efficient
-    #   based on http://www.euclideanspace.com/maths/algebra/matrix/functions/inverse/fourD/index.htm
+    # TODO: make this more efficient
+    # based on http://www.euclideanspace.com/maths/algebra/matrix/functions/inverse/fourD/index.htm
   
-    te = @elements
+    te  = @elements
     n11 = te[0]
     n12 = te[4]
     n13 = te[8]
@@ -244,16 +229,11 @@ class window.Three::Matrix4
     n42 = te[7]
     n43 = te[11]
     n44 = te[15]
-    
-    n14 * n23 * n32 * n41 - n13 * n24 * n32 * n41 - n14 * n22 * n33 * n41 + n12 * n24 * n33 * n41 + \
-    n13 * n22 * n34 * n41 - n12 * n23 * n34 * n41 - n14 * n23 * n31 * n42 + n13 * n24 * n31 * n42 + \
-    n14 * n21 * n33 * n42 - n11 * n24 * n33 * n42 - n13 * n21 * n34 * n42 + n11 * n23 * n34 * n42 + \
-    n14 * n22 * n31 * n43 - n12 * n24 * n31 * n43 - n14 * n21 * n32 * n43 + n11 * n24 * n32 * n43 + \
-    n12 * n21 * n34 * n43 - n11 * n22 * n34 * n43 - n13 * n22 * n31 * n44 + n12 * n23 * n31 * n44 + \
-    n13 * n21 * n32 * n44 - n11 * n23 * n32 * n44 - n12 * n21 * n33 * n44 + n11 * n22 * n33 * n44
+    n14 * n23 * n32 * n41 - n13 * n24 * n32 * n41 - n14 * n22 * n33 * n41 + n12 * n24 * n33 * n41 + n13 * n22 * n34 * n41 - n12 * n23 * n34 * n41 - n14 * n23 * n31 * n42 + n13 * n24 * n31 * n42 + n14 * n21 * n33 * n42 - n11 * n24 * n33 * n42 - n13 * n21 * n34 * n42 + n11 * n23 * n34 * n42 + n14 * n22 * n31 * n43 - n12 * n24 * n31 * n43 - n14 * n21 * n32 * n43 + n11 * n24 * n32 * n43 + n12 * n21 * n34 * n43 - n11 * n22 * n34 * n43 - n13 * n22 * n31 * n44 + n12 * n23 * n31 * n44 + n13 * n21 * n32 * n44 - n11 * n23 * n32 * n44 - n12 * n21 * n33 * n44 + n11 * n22 * n33 * n44
 
   transpose: ->
-    te = @elements
+    te      = @elements
+    tmp     = undefined
     tmp     = te[1]
     te[1]   = te[4]
     te[4]   = tmp
@@ -274,8 +254,8 @@ class window.Three::Matrix4
     te[14]  = tmp
     this
 
-  flatten_to_array: (flat) ->
-    te = @elements
+  flattenToArray: (flat) ->
+    te        = @elements
     flat[0]   = te[0]
     flat[1]   = te[1]
     flat[2]   = te[2]
@@ -294,7 +274,7 @@ class window.Three::Matrix4
     flat[15]  = te[15]
     flat
 
-  flatten_to_array_offset: (flat, offset) ->
+  flattenToArrayOffset: (flat, offset) ->
     te = @elements
     flat[offset]      = te[0]
     flat[offset + 1]  = te[1]
@@ -314,32 +294,32 @@ class window.Three::Matrix4
     flat[offset + 15] = te[15]
     flat
 
-  get_position: ->
+  getPosition: ->
     te = @elements
-    Three::Matrix4.__v1.set te[12], te[13], te[14]
+    THREE.Matrix4.__v1.set te[12], te[13], te[14]
 
-  set_position: (v) ->
+  setPosition: (v) ->
     te      = @elements
     te[12]  = v.x
     te[13]  = v.y
     te[14]  = v.z
     this
 
-  get_column_x: ->
+  getColumnX: ->
     te = @elements
-    Three::Matrix4.__v1.set te[0], te[1], te[2]
+    THREE.Matrix4.__v1.set te[0], te[1], te[2]
 
-  get_column_y: ->
+  getColumnY: ->
     te = @elements
-    Three::Matrix4.__v1.set te[4], te[5], te[6]
+    THREE.Matrix4.__v1.set te[4], te[5], te[6]
 
-  get_column_z: ->
+  getColumnZ: ->
     te = @elements
-    Three::Matrix4.__v1.set te[8], te[9], te[10]
+    THREE.Matrix4.__v1.set te[8], te[9], te[10]
 
-  get_inverse: (m) ->
+  getInverse: (m) ->
     # based on http://www.euclideanspace.com/maths/algebra/matrix/functions/inverse/fourD/index.htm
-    
+  
     te  = @elements
     me  = m.elements
     n11 = me[0]
@@ -358,6 +338,7 @@ class window.Three::Matrix4
     n42 = me[7]
     n43 = me[11]
     n44 = me[15]
+    
     te[0]   = n23 * n34 * n42 - n24 * n33 * n42 + n24 * n32 * n43 - n22 * n34 * n43 - n23 * n32 * n44 + n22 * n33 * n44
     te[4]   = n14 * n33 * n42 - n13 * n34 * n42 - n14 * n32 * n43 + n12 * n34 * n43 + n13 * n32 * n44 - n12 * n33 * n44
     te[8]   = n13 * n24 * n42 - n14 * n23 * n42 + n14 * n22 * n43 - n12 * n24 * n43 - n13 * n22 * n44 + n12 * n23 * n44
@@ -374,10 +355,10 @@ class window.Three::Matrix4
     te[7]   = n12 * n33 * n41 - n13 * n32 * n41 + n13 * n31 * n42 - n11 * n33 * n42 - n12 * n31 * n43 + n11 * n32 * n43
     te[11]  = n13 * n22 * n41 - n12 * n23 * n41 - n13 * n21 * n42 + n11 * n23 * n42 + n12 * n21 * n43 - n11 * n22 * n43
     te[15]  = n12 * n23 * n31 - n13 * n22 * n31 + n13 * n21 * n32 - n11 * n23 * n32 - n12 * n21 * n33 + n11 * n22 * n33
-    @multiply_scalar 1 / m.determinant()
+    @multiplyScalar 1 / m.determinant()
     this
 
-  set_rotation_from_euler: (v, order) ->
+  setRotationFromEuler: (v, order) ->
     te  = @elements
     x   = v.x
     y   = v.y
@@ -475,8 +456,8 @@ class window.Three::Matrix4
         te[10]  = a * c
     this
 
-  set_rotation_from_quaternion: (q) ->
-    te = @elements
+  setRotationFromQuaternion: (q) ->
+    te  = @elements
     x   = q.x
     y   = q.y
     z   = q.z
@@ -505,13 +486,13 @@ class window.Three::Matrix4
     this
 
   compose: (translation, rotation, scale) ->
-    te = @elements
-    m_rotation  = Three::Matrix4.__m1
-    m_scale     = Three::Matrix4.__m2
-    m_rotation.identity()
-    m_rotation.set_rotation_from_quaternion rotation
-    m_scale.make_scale scale.x, scale.y, scale.z
-    @multiply m_rotation, m_scale
+    te        = @elements
+    mRotation = THREE.Matrix4.__m1
+    mScale    = THREE.Matrix4.__m2
+    mRotation.identity()
+    mRotation.setRotationFromQuaternion rotation
+    mScale.makeScale scale.x, scale.y, scale.z
+    @multiply mRotation, mScale
     te[12] = translation.x
     te[13] = translation.y
     te[14] = translation.z
@@ -519,25 +500,27 @@ class window.Three::Matrix4
 
   decompose: (translation, rotation, scale) ->
     te  = @elements
-    x   = Three::Matrix4.__v1
-    y   = Three::Matrix4.__v2
-    z   = Three::Matrix4.__v3
+    
+    # grab the axis vectors
+    x   = THREE.Matrix4.__v1
+    y   = THREE.Matrix4.__v2
+    z   = THREE.Matrix4.__v3
     x.set te[0], te[1], te[2]
     y.set te[4], te[5], te[6]
     z.set te[8], te[9], te[10]
-    
-    translation   = new Three::Vector3()    unless translation  instanceof Three::Vector3 
-    rotation      = new Three::Quaternion() unless rotation     instanceof Three::Quaternion
-    scale         = new Three::Vector3() unless scale instanceof Three::Vector3
-    scale.x       = x.length()
-    scale.y       = y.length()
-    scale.z       = z.length()
+    translation   = (if (translation instanceof THREE.Vector3) then translation else new THREE.Vector3())
+    rotation      = (if (rotation instanceof THREE.Quaternion) then rotation else new THREE.Quaternion())
+    scale         = (if (scale instanceof THREE.Vector3) then scale else new THREE.Vector3())
+    scale.x = x.length()
+    scale.y = y.length()
+    scale.z = z.length()
     translation.x = te[12]
     translation.y = te[13]
     translation.z = te[14]
-    matrix        = Three::Matrix4.__m1
-    matrix.copy   this
     
+    # scale the rotation part
+    matrix        = THREE.Matrix4.__m1
+    matrix.copy this
     matrix.elements[0]  /= scale.x
     matrix.elements[1]  /= scale.x
     matrix.elements[2]  /= scale.x
@@ -547,11 +530,10 @@ class window.Three::Matrix4
     matrix.elements[8]  /= scale.z
     matrix.elements[9]  /= scale.z
     matrix.elements[10] /= scale.z
-    
-    rotation.set_from_rotation_matrix matrix
+    rotation.setFromRotationMatrix matrix
     [translation, rotation, scale]
 
-  extract_position: (m) ->
+  extractPosition: (m) ->
     te      = @elements
     me      = m.elements
     te[12]  = me[12]
@@ -559,36 +541,36 @@ class window.Three::Matrix4
     te[14]  = me[14]
     this
 
-  extract_rotation: (m) ->
+  extractRotation: (m) ->
     te      = @elements
     me      = m.elements
-    vector  = Three::Matrix4.__v1
+    vector  = THREE.Matrix4.__v1
     scaleX  = 1 / vector.set(me[0], me[1], me[2]).length()
     scaleY  = 1 / vector.set(me[4], me[5], me[6]).length()
     scaleZ  = 1 / vector.set(me[8], me[9], me[10]).length()
-    te[0]   = me[0]   * scaleX
-    te[1]   = me[1]   * scaleX
-    te[2]   = me[2]   * scaleX
-    te[4]   = me[4]   * scaleY
-    te[5]   = me[5]   * scaleY
-    te[6]   = me[6]   * scaleY
-    te[8]   = me[8]   * scaleZ
-    te[9]   = me[9]   * scaleZ
-    te[10]  = me[10]  * scaleZ
+    te[0]   = me[0] * scaleX
+    te[1]   = me[1] * scaleX
+    te[2]   = me[2] * scaleX
+    te[4]   = me[4] * scaleY
+    te[5]   = me[5] * scaleY
+    te[6]   = me[6] * scaleY
+    te[8]   = me[8] * scaleZ
+    te[9]   = me[9] * scaleZ
+    te[10]  = me[10] * scaleZ
     this
 
   translate: (v) ->
-    te = @elements
-    x = v.x
-    y = v.y
-    z = v.z
+    te  = @elements
+    x   = v.x
+    y   = v.y
+    z   = v.z
     te[12] = te[0] * x + te[4] * y + te[8] * z + te[12]
     te[13] = te[1] * x + te[5] * y + te[9] * z + te[13]
     te[14] = te[2] * x + te[6] * y + te[10] * z + te[14]
     te[15] = te[3] * x + te[7] * y + te[11] * z + te[15]
     this
 
-  rotate_x: (angle) ->
+  rotateX: (angle) ->
     te  = @elements
     m12 = te[4]
     m22 = te[5]
@@ -598,8 +580,8 @@ class window.Three::Matrix4
     m23 = te[9]
     m33 = te[10]
     m43 = te[11]
-    c   = Math.cos angle
-    s   = Math.sin angle
+    c   = Math.cos(angle)
+    s   = Math.sin(angle)
     
     te[4]   = c * m12 + s * m13
     te[5]   = c * m22 + s * m23
@@ -611,7 +593,7 @@ class window.Three::Matrix4
     te[11]  = c * m43 - s * m42
     this
 
-  rotate_y: (angle) ->
+  rotateY: (angle) ->
     te  = @elements
     m11 = te[0]
     m21 = te[1]
@@ -634,7 +616,7 @@ class window.Three::Matrix4
     te[11]  = c * m43 + s * m41
     this
 
-  rotate_z: (angle) ->
+  rotateZ: (angle) ->
     te  = @elements
     m11 = te[0]
     m21 = te[1]
@@ -657,14 +639,15 @@ class window.Three::Matrix4
     te[7] = c * m42 - s * m41
     this
 
-  rotate_by_axis: (axis, angle) ->
+  rotateByAxis: (axis, angle) ->
     te = @elements
-    if      axis.x is 1 and axis.y is 0 and axis.z is 0
-      return @rotate_x angle
+    
+    # optimize by checking axis
+    if axis.x is 1 and axis.y is 0 and axis.z is 0
+      return @rotateX(angle)
     else if axis.x is 0 and axis.y is 1 and axis.z is 0
-      return @rotate_y angle
-    else if axis.x is 0 and axis.y is 0 and axis.z is 1
-      return @rotate_z angle
+      return @rotateY(angle)
+    else return @rotateZ(angle)  if axis.x is 0 and axis.y is 0 and axis.z is 1
     x   = axis.x
     y   = axis.y
     z   = axis.z
@@ -677,10 +660,10 @@ class window.Three::Matrix4
     zz  = z * z
     c   = Math.cos(angle)
     s   = Math.sin(angle)
-    one_minus_cosine = 1 - c
-    xy  = x * y * one_minus_cosine
-    xz  = x * z * one_minus_cosine
-    yz  = y * z * one_minus_cosine
+    oneMinusCosine = 1 - c
+    xy  = x * y * oneMinusCosine
+    xz  = x * z * oneMinusCosine
+    yz  = y * z * oneMinusCosine
     xs  = x * s
     ys  = y * s
     zs  = z * s
@@ -729,7 +712,6 @@ class window.Three::Matrix4
     x   = v.x
     y   = v.y
     z   = v.z
-    
     te[0]   *= x
     te[4]   *= y
     te[8]   *= z
@@ -744,82 +726,54 @@ class window.Three::Matrix4
     te[11]  *= z
     this
 
-  get_max_scale_on_axis: ->
+  getMaxScaleOnAxis: ->
     te = @elements
-    scale_x_sq = te[0] * te[0] + te[1] * te[1] + te[2] * te[2]
-    scale_y_sq = te[4] * te[4] + te[5] * te[5] + te[6] * te[6]
-    scale_z_sq = te[8] * te[8] + te[9] * te[9] + te[10] * te[10]
-    Math.sqrt Math.max(scale_x_sq, Math.max(scale_y_sq, scale_z_sq))
+    scaleXSq = te[0] * te[0] + te[1] * te[1] + te[2] * te[2]
+    scaleYSq = te[4] * te[4] + te[5] * te[5] + te[6] * te[6]
+    scaleZSq = te[8] * te[8] + te[9] * te[9] + te[10] * te[10]
+    Math.sqrt Math.max(scaleXSq, Math.max(scaleYSq, scaleZSq))
 
-  make_translation: (x, y, z) ->
-    @set(
-      1, 0, 0, x
-      0, 1, 0, y
-      0, 0, 1, z
-      0, 0, 0, 1
-    )
+  makeTranslation: (x, y, z) ->
+    @set 1, 0, 0, x, 0, 1, 0, y, 0, 0, 1, z, 0, 0, 0, 1
     this
 
-  make_rotation_x: (theta) ->
-    c = Math.cos theta
-    s = Math.sin theta
-    @set(
-      1, 0, 0,  0
-      0, c, -s, 0
-      0, s, c,  0
-      0, 0, 0,  1
-    )
+  makeRotationX: (theta) ->
+    c = Math.cos(theta)
+    s = Math.sin(theta)
+    @set 1, 0, 0, 0, 0, c, -s, 0, 0, s, c, 0, 0, 0, 0, 1
     this
 
-  make_rotation_y: (theta) ->
-    c = Math.cos theta
-    s = Math.sin theta
-    @set(
-      c,  0, s, 0
-      0,  1, 0, 0
-      -s, 0, c, 0
-      0,  0, 0, 1
-    )
+  makeRotationY: (theta) ->
+    c = Math.cos(theta)
+    s = Math.sin(theta)
+    @set c, 0, s, 0, 0, 1, 0, 0, -s, 0, c, 0, 0, 0, 0, 1
     this
 
-  make_rotation_z: (theta) ->
-    c = Math.cos theta
-    s = Math.sin theta
-    @set(
-      c, -s, 0, 0
-      s,  c, 0, 0
-      0,  0, 1, 0
-      0,  0, 0, 1
-    )
+  makeRotationZ: (theta) ->
+    c = Math.cos(theta)
+    s = Math.sin(theta)
+    @set c, -s, 0, 0, s, c, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1
     this
 
-  make_rotation_axis: (axis, angle) ->
-    c   = Math.cos angle
-    s   = Math.sin angle
+  makeRotationAxis: (axis, angle) ->
+    # Based on http://www.gamedev.net/reference/articles/article1199.asp
+  
+    c   = Math.cos(angle)
+    s   = Math.sin(angle)
     t   = 1 - c
     x   = axis.x
     y   = axis.y
     z   = axis.z
     tx  = t * x
     ty  = t * y
-    @set(
-      tx * x + c,     tx * y - s * z,   tx * z + s * y, 0
-      tx * y + s * z, ty * y + c,       ty * z - s * x, 0
-      tx * z - s * y, ty * z + s * x,   t * z * z + c,  0
-      0,              0,                0,              1
-    )
+    @set tx * x + c, tx * y - s * z, tx * z + s * y, 0, tx * y + s * z, ty * y + c, ty * z - s * x, 0, tx * z - s * y, ty * z + s * x, t * z * z + c, 0, 0, 0, 0, 1
     this
 
-  make_scale: (x, y, z) ->
-    @set(
-      x, 0, 0, 0
-      0, y, 0, 0
-      0, 0, z, 0
-      0, 0, 0, 1
-    )
+  makeScale: (x, y, z) ->
+    @set x, 0, 0, 0, 0, y, 0, 0, 0, 0, z, 0, 0, 0, 0, 1
     this
 
-  make_frustum: (left, right, bottom, top, near, far) ->
+  makeFrustum: (left, right, bottom, top, near, far) ->
     te  = @elements
     x   = 2 * near / (right - left)
     y   = 2 * near / (top - bottom)
@@ -846,14 +800,14 @@ class window.Three::Matrix4
     te[15]  = 0
     this
 
-  make_perspective: (fov, aspect, near, far) ->
+  makePerspective: (fov, aspect, near, far) ->
     ymax = near * Math.tan(fov * Math.PI / 360)
     ymin = -ymax
     xmin = ymin * aspect
     xmax = ymax * aspect
-    @make_frustum xmin, xmax, ymin, ymax, near, far
+    @makeFrustum xmin, xmax, ymin, ymax, near, far
 
-  make_orthographic: (left, right, top, bottom, near, far) ->
+  makeOrthographic: (left, right, top, bottom, near, far) ->
     te  = @elements
     w   = right - left
     h   = top - bottom
@@ -882,15 +836,12 @@ class window.Three::Matrix4
 
   clone: ->
     te = @elements
-    new Three::Matrix4(
-      te[0], te[4], te[8],  te[12]
-      te[1], te[5], te[9],  te[13]
-      te[2], te[6], te[10], te[14]
-      te[3], te[7], te[11], te[15]
-    )
+    new THREE.Matrix4(te[0], te[4], te[8], te[12], te[1], te[5], te[9], te[13], te[2], te[6], te[10], te[14], te[3], te[7], te[11], te[15])
 
-window.Three::Matrix4.__v1 = new Three::Vector3()
-window.Three::Matrix4.__v2 = new Three::Vector3()
-window.Three::Matrix4.__v3 = new Three::Vector3()
-window.Three::Matrix4.__m1 = new Three::Matrix4()
-window.Three::Matrix4.__m2 = new Three::Matrix4()
+namespace "THREE", (exports) ->
+  exports.Matrix4 = Matrix4
+  exports.Matrix4.__v1 = new THREE.Vector3()
+  exports.Matrix4.__v2 = new THREE.Vector3()
+  exports.Matrix4.__v3 = new THREE.Vector3()
+  exports.Matrix4.__m1 = new THREE.Matrix4()
+  exports.Matrix4.__m2 = new THREE.Matrix4()

@@ -3,7 +3,7 @@
 # @author philogb / http://blog.thejit.org/
 # @author mikael emtinger / http://gomo.se/
 # @author egraether / http://egraether.com/
-# @autor aladjev.andrew@gmail.com
+# @author aladjev.andrew@gmail.com
 
 class Vector3
   constructor: (x, y, z) ->

@@ -1,5 +1,5 @@
 # @author mr.doob / http://mrdoob.com/
-# @autor aladjev.andrew@gmail.com
+# @author aladjev.andrew@gmail.com
 
 THREE.Ray = (origin, direction) ->
   self = this

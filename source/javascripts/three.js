@@ -2,6 +2,7 @@
 
 // common files:
 //= require new_src/three
+
 //= require new_src/core/clock
 //= require new_src/core/color
 //= require new_src/core/vector_2
@@ -9,23 +10,24 @@
 //= require new_src/core/vector_4
 //= require new_src/core/frustum
 //= require new_src/core/ray
+//= require new_src/core/rectangle
+//= require new_src/core/math
+//= require new_src/core/matrix_3
+//= require new_src/core/matrix_4
+//= require new_src/core/object_3d
+//= require new_src/core/projector
+//= require new_src/core/quaternion
+//= require new_src/core/vertex
+//= require new_src/core/face_3
+//= require new_src/core/face_4
+//= require new_src/core/uv
+//= require new_src/core/geometry
+//= require new_src/core/spline
 
-//= require original_src/core/Rectangle
-//= require original_src/core/Math
-//= require original_src/core/Matrix3
-//= require original_src/core/Matrix4
-//= require original_src/core/Object3D
-//= require original_src/core/Projector
-//= require original_src/core/Quaternion
-//= require original_src/core/Vertex
-//= require original_src/core/Face3
-//= require original_src/core/Face4
-//= require original_src/core/UV
-//= require original_src/core/Geometry
-//= require original_src/core/Spline
-//= require original_src/cameras/Camera
-//= require original_src/cameras/OrthographicCamera
-//= require original_src/cameras/PerspectiveCamera
+//= require new_src/cameras/camera
+//= require new_src/cameras/orthographic_camera
+//= require new_src/cameras/perspective_camera
+
 //= require original_src/lights/Light
 //= require original_src/lights/AmbientLight
 //= require original_src/lights/DirectionalLight
