@@ -28,13 +28,15 @@
 //= require new_src/cameras/orthographic_camera
 //= require new_src/cameras/perspective_camera
 
-//= require original_src/lights/Light
-//= require original_src/lights/AmbientLight
-//= require original_src/lights/DirectionalLight
-//= require original_src/lights/PointLight
-//= require original_src/lights/SpotLight
-//= require original_src/loaders/Loader
-//= require original_src/loaders/BinaryLoader
+//= require new_src/lights/light
+//= require new_src/lights/ambient_light
+//= require new_src/lights/directional_light
+//= require new_src/lights/point_light
+//= require new_src/lights/spot_light
+
+//= require new_src/loaders/loader
+//= require new_src/loaders/binary_loader
+
 //= require original_src/loaders/JSONLoader
 //= require original_src/loaders/SceneLoader
 //= require original_src/materials/Material
