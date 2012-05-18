@@ -4,7 +4,7 @@
 class Loader
   constructor: (showStatus) ->
     @showStatus = showStatus
-    @statusDomElement = (if showStatus then @addStatusElement() else null)
+    @statusDomElement = (if showStatus then Loader.addStatusElement() else null)
     @onLoadStart    = ->
     @onLoadProgress = ->
     @onLoadComplete = ->
