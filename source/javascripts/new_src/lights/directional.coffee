@@ -2,6 +2,10 @@
 # @author alteredq / http://alteredqualia.com/
 # @author aladjev.andrew@gmail.com
 
+#= require new_src/core/vector_3
+#= require new_src/core/object_3d
+#= require new_src/lights/light
+
 class DirectionalLight extends THREE.Light
   constructor: (hex, intensity, distance) ->
     super hex

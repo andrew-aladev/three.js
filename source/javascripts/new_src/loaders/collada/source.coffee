@@ -1,7 +1,13 @@
+# @author Tim Knip / http://www.floorplanner.com/ / tim at floorplanner.com
+# @author aladjev.andrew@gmail.com
+
+#= require new_src/loaders/collada/accessor
+
 class Source
-  constructor: ->
-    @id   = id
-    @type = null
+  constructor: (loader, id) ->
+    @id     = id
+    @type   = null
+    @loader = loader
     
   parse: (element) ->
     @id = element.getAttribute "id"
@@ -11,22 +17,22 @@ class Source
       child = element.childNodes[i]
       switch child.nodeName
         when "bool_array"
-          @data = _bools child.textContent
+          @data = THREE.ColladaLoader._bools child.textContent
           @type = child.nodeName
         when "float_array"
-          @data = _floats child.textContent
+          @data = THREE.ColladaLoader._floats child.textContent
           @type = child.nodeName
         when "int_array"
-          @data = _ints child.textContent
+          @data = THREE.ColladaLoader._ints child.textContent
           @type = child.nodeName
         when "IDREF_array", "Name_array"
-          @data = _strings child.textContent
+          @data = THREE.ColladaLoader._strings child.textContent
           @type = child.nodeName
         when "technique_common"
           child_length = child.childNodes.length
           for j in [0...child_length]
             if child.childNodes[j].nodeName is "accessor"
-              @accessor = new Accessor().parse child.childNodes[j]
+              @accessor = new THREE.Collada.Accessor().parse child.childNodes[j]
               break
     this
 
@@ -41,10 +47,10 @@ class Source
         length = @data.length
         for j in [0...length] by 16
           s = @data.slice j, j + 16
-          m = getConvertedMat4 s
+          m = @loader.getConvertedMat4 s
           result.push m
       else
-        console.log "ColladaLoader: Source: Read dont know how to read ", param.type, "."
+        console.warn "ColladaLoader: Source: Read dont know how to read ", param.type, "."
     result
     
 namespace "THREE.Collada", (exports) ->

@@ -3,13 +3,15 @@
 # @author zz85 / http://www.lab4games.net/zz85/blog
 # @author aladjev.andrew@gmail.com
 
+#= require new_src/cameras/camera
+
 class PerspectiveCamera extends THREE.Camera
   constructor: (fov, aspect, near, far) ->
     super()
-    @fov    = (if fov isnt `undefined` then fov else 50)
-    @aspect = (if aspect isnt `undefined` then aspect else 1)
-    @near   = (if near isnt `undefined` then near else 0.1)
-    @far    = (if far isnt `undefined` then far else 2000)
+    @fov    = (if fov isnt undefined then fov else 50)
+    @aspect = (if aspect isnt undefined then aspect else 1)
+    @near   = (if near isnt undefined then near else 0.1)
+    @far    = (if far isnt undefined then far else 2000)
     @updateProjectionMatrix()
 
 # Uses Focal Length (in mm) to estimate and set FOV
@@ -17,7 +19,7 @@ class PerspectiveCamera extends THREE.Camera
 # Formula based on http://www.bobatkins.com/photography/technical/field_of_view.html
 
   setLens: (focalLength, frameHeight) ->
-    frameHeight = (if frameHeight isnt `undefined` then frameHeight else 24)
+    frameHeight = (if frameHeight isnt undefined then frameHeight else 24)
     @fov = 2 * Math.atan(frameHeight / (focalLength * 2)) * (180 / Math.PI)
     @updateProjectionMatrix()
 
@@ -74,7 +76,14 @@ class PerspectiveCamera extends THREE.Camera
       right = aspect * top
       width = Math.abs(right - left)
       height = Math.abs(top - bottom)
-      @projectionMatrix.makeFrustum left + @x * width / @fullWidth, left + (@x + @width) * width / @fullWidth, top - (@y + @height) * height / @fullHeight, top - @y * height / @fullHeight, @near, @far
+      @projectionMatrix.makeFrustum(
+        left + @x * width / @fullWidth
+        left + (@x + @width) * width / @fullWidth
+        top - (@y + @height) * height / @fullHeight
+        top - @y * height / @fullHeight
+        @near
+        @far
+      )
     else
       @projectionMatrix.makePerspective @fov, @aspect, @near, @far
 

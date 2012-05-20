@@ -2,6 +2,9 @@
 # @author alteredq / http://alteredqualia.com/
 # @author aladjev.andrew@gmail.com
 
+#= require new_src/core/vector_3
+#= require new_src/core/vector_4
+
 class Frustum
   constructor: ->
     @planes = [

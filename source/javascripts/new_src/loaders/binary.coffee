@@ -1,6 +1,13 @@
 # @author alteredq / http://alteredqualia.com/
 # @author aladjev.andrew@gmail.com
 
+#= require new_src/loaders/loader
+#= require new_src/core/geometry
+#= require new_src/core/vector_3
+#= require new_src/core/face_3
+#= require new_src/core/face_4
+#= require new_src/core/uv
+
 class BinaryLoader extends THREE.Loader
   constructor: (showStatus) ->
     super showStatus
@@ -16,7 +23,7 @@ class BinaryLoader extends THREE.Loader
   load: (url, callback, texturePath, binaryPath) ->
     texturePath = (if texturePath then texturePath else @extractUrlBase(url))
     binaryPath = (if binaryPath then binaryPath else @extractUrlBase(url))
-    callbackProgress = (if @showProgress then THREE.Loader::updateProgress else null)
+    callbackProgress = (if @showProgress then @updateProgress else null)
     @onLoadStart()
     
     #1 load JS part via web worker
@@ -38,13 +45,14 @@ class BinaryLoader extends THREE.Loader
     xhr.send null
 
   loadAjaxBuffers: (json, callback, binaryPath, texturePath, callbackProgress) ->
-    xhr = new XMLHttpRequest()
-    url = binaryPath + "/" + json.buffers
+    self  = this
+    xhr   = new XMLHttpRequest()
+    url   = binaryPath + "/" + json.buffers
     length = 0
     xhr.onreadystatechange = ->
       if xhr.readyState is 4
         if xhr.status is 200 or xhr.status is 0
-          THREE.BinaryLoader::createBinModel xhr.response, callback, texturePath, json.materials
+          self.createBinModel xhr.response, callback, texturePath, json.materials
         else
           console.error "THREE.BinaryLoader: Couldn't load [" + url + "] [" + xhr.status + "]"
       else if xhr.readyState is 3

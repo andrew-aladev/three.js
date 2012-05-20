@@ -1,7 +1,13 @@
+# @author Tim Knip / http://www.floorplanner.com/ / tim at floorplanner.com
+# @author aladjev.andrew@gmail.com
+
+#= require new_src/loaders/collada/mesh
+
 class Geometry
-  constructor: ->
-    @id   = ""
-    @mesh = null
+  constructor: (loader) ->
+    @id     = ""
+    @mesh   = null
+    @loader = loader
     
   parse: (element) ->
     @id = element.getAttribute("id")
@@ -11,7 +17,7 @@ class Geometry
       child = element.childNodes[i]
       switch child.nodeName
         when "mesh"
-          @mesh = new Mesh(this).parse child
+          @mesh = new THREE.Collada.Mesh(loader, this).parse child
     this
 
 namespace "THREE.Collada", (exports) ->

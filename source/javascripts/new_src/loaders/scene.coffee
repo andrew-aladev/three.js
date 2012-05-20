@@ -1,6 +1,19 @@
 # @author alteredq / http://alteredqualia.com/
 # @author aladjev.andrew@gmail.com
 
+#= require new_src/loaders/loader
+#= require new_src/loaders/binary
+#= require new_src/loaders/json
+#= require new_src/core/color
+#= require new_src/core/geometry
+#= require new_src/core/vector_3
+#= require new_src/core/object_3d
+#= require new_src/cameras/orthographic
+#= require new_src/cameras/perspective
+#= require new_src/lights/ambient
+#= require new_src/lights/directional
+#= require new_src/lights/point
+
 class SceneLoader extends THREE.Loader
   constructor: ->
     @onLoadStart = ->

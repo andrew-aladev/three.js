@@ -2,6 +2,13 @@
 # @author alteredq / http://alteredqualia.com/
 # @author aladjev.andrew@gmail.com
 
+#= require new_src/loaders/loader
+#= require new_src/core/geometry
+#= require new_src/core/vector_3
+#= require new_src/core/face_3
+#= require new_src/core/face_4
+#= require new_src/core/uv
+
 class JSONLoader extends THREE.Loader
   constrcutor: (showStatus) ->
     super showStatus
@@ -245,8 +252,8 @@ class JSONModel extends THREE.Geometry
         srcColors = @json.morphColors[i].colors
         
         cLength = srcColors.length
-        for c in [0...cLength]
-          color = new THREE.Color(0xffaa00)
+        for c in [0...cLength] by 3
+          color = new THREE.Color 0xffaa00
           color.setRGB srcColors[c], srcColors[c + 1], srcColors[c + 2]
           dstColors.push color
 

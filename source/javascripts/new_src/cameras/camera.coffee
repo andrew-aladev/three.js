@@ -2,6 +2,9 @@
 # @author mikael emtinger / http://gomo.se/
 # @author aladjev.andrew@gmail.com
 
+#= require new_src/core/object_3d
+#= require new_src/core/matrix_4
+
 class Camera extends THREE.Object3D
   constructor: ->
     super()
@@ -11,7 +14,7 @@ class Camera extends THREE.Object3D
 
   lookAt: (vector) ->
     @matrix.lookAt @position, vector, @up
-    @rotation.getRotationFromMatrix @matrix  if @rotationAutoUpdate
+    @rotation.getRotationFromMatrix @matrix if @rotationAutoUpdate
     
 namespace "THREE", (exports) ->
   exports.Camera = Camera

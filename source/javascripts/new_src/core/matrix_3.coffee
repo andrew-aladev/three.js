@@ -20,7 +20,7 @@ class Matrix3
     a23 = -me[9] * me[0] + me[1] * me[8]
     a33 = me[5] * me[0] - me[1] * me[4]
     det = me[0] * a11 + me[1] * a12 + me[2] * a13
-    console.warn "Matrix3.getInverse(): determinant == 0"  if det is 0
+    console.warn "Matrix3.getInverse(): determinant == 0" if det is 0
     idet = 1.0 / det
     
     m     = @elements

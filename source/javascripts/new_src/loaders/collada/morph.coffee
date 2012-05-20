@@ -1,9 +1,16 @@
+# @author Tim Knip / http://www.floorplanner.com/ / tim at floorplanner.com
+# @author aladjev.andrew@gmail.com
+
+#= require new_src/loaders/collada/source
+#= require new_src/loaders/collada/input
+
 class Morph
-  constructor: ->
+  constructor: (loader) ->
     @method   = null
     @source   = null
     @targets  = null
     @weights  = null
+    @loader   = loader
     
   parse: (element) ->
     sources = {}
@@ -18,12 +25,12 @@ class Morph
         continue
       switch child.nodeName
         when "source"
-          source = new Source().parse child
+          source = new THREE.Collada.Source(@loader).parse child
           sources[source.id] = source
         when "targets"
           inputs = @parseInputs child
         else
-          console.log child.nodeName
+          console.warn child.nodeName
     
     length = inputs.length
     for i in [0...length]
@@ -47,7 +54,7 @@ class Morph
         continue 
       switch child.nodeName
         when "input"
-          inputs.push new Input().parse child
+          inputs.push new THREE.Collada.Input().parse child
     inputs
     
 namespace "THREE.Collada", (exports) ->

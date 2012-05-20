@@ -1,21 +1,27 @@
+# @author Tim Knip / http://www.floorplanner.com/ / tim at floorplanner.com
+# @author aladjev.andrew@gmail.com
+
+#= require new_src/core/vector_3
+
 class Transform
-  constructor: ->
-    @sid  = ""
-    @type = ""
-    @data = []
-    @obj  = null
+  constructor: (loader) ->
+    @sid    = ""
+    @type   = ""
+    @data   = []
+    @obj    = null
+    @loader = loader
     
   parse: (element) ->
     @sid  = element.getAttribute "sid"
     @type = element.nodeName
-    @data = _floats element.textContent
+    @data = THREE.ColladaLoader._floats element.textContent
     @convert()
     this
 
   convert: ->
     switch @type
       when "matrix"
-        @obj = getConvertedMat4 @data
+        @obj = @loader.getConvertedMat4 @data
       when "rotate"
         @angle = @data[3] * TO_RADIANS
       when "translate"
@@ -25,7 +31,7 @@ class Transform
         fixCoords @data, 1
         @obj = new THREE.Vector3 @data[0], @data[1], @data[2]
       else
-        console.log "Can not convert Transform of type ", @type
+        console.warn "Can not convert Transform of type ", @type
 
   apply: (matrix) ->
     switch @type
@@ -74,7 +80,7 @@ class Transform
           @obj[propName] = data
 
         else
-          console.log "Incorrect addressing of matrix in transform."
+          console.warn "Incorrect addressing of matrix in transform."
 
       when "translate", "scale"
         if Object::toString.call(member) is "[object Array]"

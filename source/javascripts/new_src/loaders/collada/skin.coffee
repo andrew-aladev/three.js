@@ -1,10 +1,17 @@
+# @author Tim Knip / http://www.floorplanner.com/ / tim at floorplanner.com
+# @author aladjev.andrew@gmail.com
+
+#= require new_src/loaders/collada/source
+#= require new_src/loaders/collada/input
+
 class Skin
-  constructor: ->
+  constructor: (loader) ->
     @source           = ""
     @bindShapeMatrix  = null
     @invBindMatrices  = []
     @joints           = []
     @weights          = []
+    @loader           = loader
 
   parse: (element) ->
     sources           = {}
@@ -20,17 +27,17 @@ class Skin
         continue
       switch child.nodeName
         when "bind_shape_matrix"
-          f = _floats(child.textContent)
-          @bindShapeMatrix = getConvertedMat4(f)
+          f = THREE.ColladaLoader._floats child.textContent
+          @bindShapeMatrix = @loader.getConvertedMat4 f
         when "source"
-          src = new Source().parse(child)
+          src = new THREE.Collada.Source(@loader).parse child
           sources[src.id] = src
         when "joints"
           joints = child
         when "vertex_weights"
           weights = child
         else
-          console.log child.nodeName
+          console.warn child.nodeName
 
     @parseJoints  joints,   sources
     @parseWeights weights,  sources
@@ -44,7 +51,7 @@ class Skin
         continue
       switch child.nodeName
         when "input"
-          input = new Input().parse child
+          input = new THREE.Collada.Input().parse child
           source = sources[input.source]
           if input.semantic is "JOINT"
             @joints = source.read()
@@ -60,11 +67,11 @@ class Skin
         continue
       switch child.nodeName
         when "input"
-          inputs.push new Input().parse child
+          inputs.push new THREE.Collada.Input().parse child
         when "v"
-          v = _ints child.textContent
+          v = THREE.ColladaLoader._ints child.textContent
         when "vcount"
-          vcount = _ints child.textContent
+          vcount = THREE.ColladaLoader._ints child.textContent
 
     index = 0
     length = vcount.length

@@ -3,6 +3,12 @@
 # @author julianwa / https://github.com/julianwa
 # @author aladjev.andrew@gmail.com
 
+#= require new_src/core/matrix_4
+#= require new_src/core/vector_3
+#= require new_src/core/vector_4
+#= require new_src/core/frustum
+#= require new_src/core/ray
+
 class Projector
   constructor: ->
     @_object         = undefined
@@ -217,7 +223,7 @@ class Projector
     @_lineCount = 0
     @_particleCount = 0
     @_renderData.elements.length = 0
-    if camera.parent is `undefined`
+    if camera.parent is undefined
       console.warn "DEPRECATED: Camera hasn't been added to a Scene. Adding it..."
       scene.add camera
     scene.updateMatrixWorld()

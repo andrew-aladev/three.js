@@ -1,3 +1,6 @@
+# @author Tim Knip / http://www.floorplanner.com/ / tim at floorplanner.com
+# @author aladjev.andrew@gmail.com
+
 class Accessor
   constructor: ->
     @source   = ""
@@ -8,8 +11,8 @@ class Accessor
   parse: (element) ->
     @params = []
     @source = element.getAttribute "source"
-    @count  = _attr_as_int element, "count", 0
-    @stride = _attr_as_int element, "stride", 0
+    @count  = THREE.ColladaLoader._attr_as_int element, "count", 0
+    @stride = THREE.ColladaLoader._attr_as_int element, "stride", 0
     i = 0
 
     while i < element.childNodes.length

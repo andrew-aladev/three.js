@@ -5,6 +5,8 @@
 # @author alteredq / http://alteredqualia.com/
 # @author aladjev.andrew@gmail.com
 
+#= require new_src/core/vector_3
+
 class Spline
   contructor: (points) ->
     @points = points
@@ -13,16 +15,6 @@ class Spline
       x: 0
       y: 0
       z: 0
-  
-    @point = undefined
-    @intPoint = undefined
-    @weight = undefined
-    @w2 = undefined
-    @w3 = undefined
-    @pa = undefined
-    @pb = undefined
-    @pc = undefined
-    @pd = undefined
 
   # Catmull-Rom
   interpolate = (p0, p1, p2, p3, t, t2, t3) ->

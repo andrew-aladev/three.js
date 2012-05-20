@@ -1,9 +1,23 @@
+# @author Tim Knip / http://www.floorplanner.com/ / tim at floorplanner.com
+# @author aladjev.andrew@gmail.com
+
+#= require new_src/loaders/collada/vertices
+#= require new_src/loaders/collada/triangles
+#= require new_src/loaders/collada/polygons
+#= require new_src/loaders/collada/polylist
+#= require new_src/core/geometry
+#= require new_src/core/uv
+#= require new_src/core/color
+#= require new_src/core/face_3
+#= require new_src/core/face_4
+
 class Mesh
-  constructor: ->
+  constructor: (loader, geometry) ->
     @geometry     = geometry.id
     @primitives   = []
     @vertices     = null
     @geometry3js  = null
+    @loader       = loader
     
   parse: (element) ->
     @primitives = []
@@ -12,22 +26,22 @@ class Mesh
       child = element.childNodes[i]
       switch child.nodeName
         when "source"
-          _source child
+          @loader._source child
         when "vertices"
-          @vertices = new Vertices().parse child
+          @vertices = new THREE.Collada.Verticles().parse child
         when "triangles"
-          @primitives.push new Triangles().parse(child)
+          @primitives.push new THREE.Collada.Triangles().parse(child)
         when "polygons"
-          @primitives.push new Polygons().parse(child)
+          @primitives.push new THREE.Collada.Polygons().parse(child)
         when "polylist"
-          @primitives.push new Polylist().parse(child)
+          @primitives.push new THREE.Collada.Polylist().parse(child)
 
     @geometry3js  = new THREE.Geometry()
-    vertexData    = sources[@vertices.input["POSITION"].source].data
+    vertexData    = @loader.sources[@vertices.input["POSITION"].source].data
 
     length = vertexData.length
     for i in [0...length] by 3
-      @geometry3js.vertices.push getConvertedVec3(vertexData, i).clone()
+      @geometry3js.vertices.push @loader.getConvertedVec3(vertexData, i).clone()
 
     length = @primitives.length
     for i in [0...length]
@@ -86,7 +100,7 @@ class Mesh
           inputs_length = inputs.length
           for k in [0...inputs_length]
             input     = inputs[k]
-            source    = sources[input.source]
+            source    = @loader.sources[input.source]
             index     = p[i + j * maxOffset + input.offset]
             numParams = source.accessor.params.length
             idx32     = index * numParams
@@ -95,7 +109,7 @@ class Mesh
               when "VERTEX"
                 vs.push index
               when "NORMAL"
-                ns.push getConvertedVec3(source.data, idx32)
+                ns.push @loader.getConvertedVec3(source.data, idx32)
               when "TEXCOORD"
                 ts = ts or {}
                 if ts[input.set] is undefined
@@ -109,12 +123,12 @@ class Mesh
           # check the vertices inputs
           input = @vertices.input.NORMAL
           if input
-            source    = sources[input.source]
+            source    = @loader.sources[input.source]
             numParams = source.accessor.params.length
             
             vs_length = vs.length
             for ndx in [0...vs_length]
-              ns.push getConvertedVec3(source.data, vs[ndx] * numParams)
+              ns.push @loader.getConvertedVec3(source.data, vs[ndx] * numParams)
           else
             geom.calcNormals = true
 
@@ -125,7 +139,7 @@ class Mesh
           input = @vertices.input.TEXCOORD
           if input
             texture_sets.push input.set
-            source    = sources[input.source]
+            source    = @loader.sources[input.source]
             numParams = source.accessor.params.length
 
             vs_length = vs.length
@@ -141,7 +155,7 @@ class Mesh
           # check the vertices inputs
           input = @vertices.input.COLOR
           if input
-            source    = sources[input.source]
+            source    = @loader.sources[input.source]
             numParams = source.accessor.params.length
 
             vs_length = vs.length
@@ -187,7 +201,7 @@ class Mesh
                 geom.faceVertexUvs[k] = []
               geom.faceVertexUvs[k].push uvArr
         else
-          console.log "dropped face with vcount ", vcount, " for geometry with id: ", geom.id
+          console.warn "dropped face with vcount ", vcount, " for geometry with id: ", geom.id
         i += maxOffset * vcount
     
 namespace "THREE.Collada", (exports) ->

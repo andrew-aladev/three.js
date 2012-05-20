@@ -1,7 +1,7 @@
 # @author alteredq / http://alteredqualia.com/
 # @author aladjev.andrew@gmail.com
 
-class Math
+class _Math
 
   # Clamp value to range <a, b>
   @clamp: (x, a, b) ->
@@ -36,4 +36,4 @@ class Math
     if (x < 0) then -1 else (if (x > 0) then 1 else 0)
     
 namespace "THREE", (exports) ->
-  exports.Math = Math
+  exports.Math = _Math

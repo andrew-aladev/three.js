@@ -146,7 +146,7 @@ class Vector3
     Math.sqrt @distanceToSquared(v)
 
   distanceToSquared: (v) ->
-    new THREE.Vector3().sub(this, v).lengthSq()
+    new Vector3().sub(this, v).lengthSq()
 
   getPositionFromMatrix: (m) ->
     @x = m.elements[12]
@@ -190,7 +190,7 @@ class Vector3
     @lengthSq() < 0.0001 # almostZero
 
   clone: ->
-    new THREE.Vector3(@x, @y, @z)
+    new Vector3 @x, @y, @z
     
 namespace "THREE", (exports) ->
   exports.Vector3 = Vector3

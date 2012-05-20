@@ -90,7 +90,7 @@ class Vector2
     @lengthSq() < 0.0001
 
   clone: ->
-    new THREE.Vector2(@x, @y)
+    new Vector2 @x, @y
     
 namespace "THREE", (exports) ->
   exports.Vector2 = Vector2

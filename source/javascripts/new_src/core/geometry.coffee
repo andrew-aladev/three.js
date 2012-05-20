@@ -5,6 +5,12 @@
 # @author zz85 / http://www.lab4games.net/zz85/blog
 # @author aladjev.andrew@gmail.com
 
+#= require new_src/core/matrix_4
+#= require new_src/core/face_3
+#= require new_src/core/face_4
+#= require new_src/core/vector_3
+#= require new_src/core/vector_4
+
 class Geometry
   constructor: ->
     @id         = THREE.GeometryCount++
@@ -12,8 +18,9 @@ class Geometry
     @colors     = [] # one-to-one vertex colors, used in ParticleSystem, Line and Ribbon
     @materials  = []
     @faces      = []
-    @faceUvs    = [ [] ]
-    @faceVertexUvs  = [ [] ]
+    @faceUvs    = [[]]
+
+    @faceVertexUvs  = [[]]
     @morphTargets   = []
     @morphColors    = []
     @morphNormals   = []
@@ -111,7 +118,7 @@ class Geometry
     fl = undefined
     face = undefined
     vertices = undefined
-    if @__tmpVertices is `undefined`
+    if @__tmpVertices is undefined
       @__tmpVertices = new Array(@vertices.length)
       vertices = @__tmpVertices
       v = 0
@@ -206,7 +213,7 @@ class Geometry
       f++
       
     # use temp geometry to compute face and vertex normals for each morph
-    tmpGeo = new THREE.Geometry()
+    tmpGeo = new Geometry()
     tmpGeo.faces = @faces
     i = 0
     il = @morphTargets.length
@@ -464,7 +471,7 @@ class Geometry
     while i < il
       v = @vertices[i]
       key = [ Math.round(v.x * precision), Math.round(v.y * precision), Math.round(v.z * precision) ].join("_")
-      if verticesMap[key] is `undefined`
+      if verticesMap[key] is undefined
         verticesMap[key] = i
         unique.push @vertices[i]
         changes[i] = unique.length - 1
@@ -514,5 +521,5 @@ class Geometry
     diff
 
 namespace "THREE", (exports) ->
-  exports.Geometry      =  Geometry
+  exports.Geometry      = Geometry
   exports.GeometryCount = 0

@@ -8,10 +8,27 @@
 # @author timknip / http://www.floorplanner.com/
 # @author aladjev.andrew@gmail.com
 
+#= require new_src/core/vector_3
+#= require new_src/core/vector_4
+#= require new_src/core/quaternion
+
 class Matrix4
   constructor: (n11, n12, n13, n14, n21, n22, n23, n24, n31, n32, n33, n34, n41, n42, n43, n44) ->
-    @elements = new Float32Array(16)
-    @set (if (n11 isnt `undefined`) then n11 else 1), n12 or 0, n13 or 0, n14 or 0, n21 or 0, (if (n22 isnt `undefined`) then n22 else 1), n23 or 0, n24 or 0, n31 or 0, n32 or 0, (if (n33 isnt `undefined`) then n33 else 1), n34 or 0, n41 or 0, n42 or 0, n43 or 0, (if (n44 isnt `undefined`) then n44 else 1)
+    @elements = new Float32Array 16
+    unless n11?
+      n11 = 1
+    unless n22?
+      n22 = 1
+    unless n33?
+      n33 = 1
+    unless n44?
+      n44 = 1
+    @set(
+      n11,      n12 or 0, n13 or 0, n14 or 0,
+      n21 or 0, n22,      n23 or 0, n24 or 0,
+      n31 or 0, n32 or 0, n33,      n34 or 0,
+      n41 or 0, n42 or 0, n43 or 0, n44
+    )
 
   set: (n11, n12, n13, n14, n21, n22, n23, n24, n31, n32, n33, n34, n41, n42, n43, n44) ->
     te      = @elements
@@ -34,19 +51,29 @@ class Matrix4
     this
 
   identity: ->
-    @set 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1
+    @set(
+      1, 0, 0, 0
+      0, 1, 0, 0
+      0, 0, 1, 0
+      0, 0, 0, 1
+    )
     this
 
   copy: (m) ->
     me = m.elements
-    @set me[0], me[4], me[8], me[12], me[1], me[5], me[9], me[13], me[2], me[6], me[10], me[14], me[3], me[7], me[11], me[15]
+    @set(
+      me[0], me[4], me[8],  me[12]
+      me[1], me[5], me[9],  me[13]
+      me[2], me[6], me[10], me[14]
+      me[3], me[7], me[11], me[15]
+    )
     this
 
   lookAt: (eye, target, up) ->
     te  = @elements
-    x   = THREE.Matrix4.__v1
-    y   = THREE.Matrix4.__v2
-    z   = THREE.Matrix4.__v3
+    x   = Matrix4.__v1
+    y   = Matrix4.__v2
+    z   = Matrix4.__v3
     z.sub(eye, target).normalize()
     z.z = 1  if z.length() is 0
     x.cross(up, z).normalize()
@@ -296,7 +323,7 @@ class Matrix4
 
   getPosition: ->
     te = @elements
-    THREE.Matrix4.__v1.set te[12], te[13], te[14]
+    Matrix4.__v1.set te[12], te[13], te[14]
 
   setPosition: (v) ->
     te      = @elements
@@ -307,15 +334,15 @@ class Matrix4
 
   getColumnX: ->
     te = @elements
-    THREE.Matrix4.__v1.set te[0], te[1], te[2]
+    Matrix4.__v1.set te[0], te[1], te[2]
 
   getColumnY: ->
     te = @elements
-    THREE.Matrix4.__v1.set te[4], te[5], te[6]
+    Matrix4.__v1.set te[4], te[5], te[6]
 
   getColumnZ: ->
     te = @elements
-    THREE.Matrix4.__v1.set te[8], te[9], te[10]
+    Matrix4.__v1.set te[8], te[9], te[10]
 
   getInverse: (m) ->
     # based on http://www.euclideanspace.com/maths/algebra/matrix/functions/inverse/fourD/index.htm
@@ -487,8 +514,8 @@ class Matrix4
 
   compose: (translation, rotation, scale) ->
     te        = @elements
-    mRotation = THREE.Matrix4.__m1
-    mScale    = THREE.Matrix4.__m2
+    mRotation = Matrix4.__m1
+    mScale    = Matrix4.__m2
     mRotation.identity()
     mRotation.setRotationFromQuaternion rotation
     mScale.makeScale scale.x, scale.y, scale.z
@@ -502,15 +529,20 @@ class Matrix4
     te  = @elements
     
     # grab the axis vectors
-    x   = THREE.Matrix4.__v1
-    y   = THREE.Matrix4.__v2
-    z   = THREE.Matrix4.__v3
+    x   = Matrix4.__v1
+    y   = Matrix4.__v2
+    z   = Matrix4.__v3
     x.set te[0], te[1], te[2]
     y.set te[4], te[5], te[6]
     z.set te[8], te[9], te[10]
-    translation   = (if (translation instanceof THREE.Vector3) then translation else new THREE.Vector3())
-    rotation      = (if (rotation instanceof THREE.Quaternion) then rotation else new THREE.Quaternion())
-    scale         = (if (scale instanceof THREE.Vector3) then scale else new THREE.Vector3())
+    
+    unless translation instanceof THREE.Vector3
+      translation = new THREE.Vector3()
+    unless rotation instanceof THREE.Quaternion
+      rotation = new THREE.Quaternion()
+    unless scale instanceof THREE.Vector3
+      scale = new THREE.Vector3()
+
     scale.x = x.length()
     scale.y = y.length()
     scale.z = z.length()
@@ -519,7 +551,7 @@ class Matrix4
     translation.z = te[14]
     
     # scale the rotation part
-    matrix        = THREE.Matrix4.__m1
+    matrix        = Matrix4.__m1
     matrix.copy this
     matrix.elements[0]  /= scale.x
     matrix.elements[1]  /= scale.x
@@ -544,7 +576,7 @@ class Matrix4
   extractRotation: (m) ->
     te      = @elements
     me      = m.elements
-    vector  = THREE.Matrix4.__v1
+    vector  = Matrix4.__v1
     scaleX  = 1 / vector.set(me[0], me[1], me[2]).length()
     scaleY  = 1 / vector.set(me[4], me[5], me[6]).length()
     scaleZ  = 1 / vector.set(me[8], me[9], me[10]).length()
@@ -836,12 +868,17 @@ class Matrix4
 
   clone: ->
     te = @elements
-    new THREE.Matrix4(te[0], te[4], te[8], te[12], te[1], te[5], te[9], te[13], te[2], te[6], te[10], te[14], te[3], te[7], te[11], te[15])
+    new Matrix4(
+      te[0], te[4], te[8],  te[12]
+      te[1], te[5], te[9],  te[13]
+      te[2], te[6], te[10], te[14]
+      te[3], te[7], te[11], te[15]
+    )
 
 namespace "THREE", (exports) ->
   exports.Matrix4 = Matrix4
   exports.Matrix4.__v1 = new THREE.Vector3()
   exports.Matrix4.__v2 = new THREE.Vector3()
   exports.Matrix4.__v3 = new THREE.Vector3()
-  exports.Matrix4.__m1 = new THREE.Matrix4()
-  exports.Matrix4.__m2 = new THREE.Matrix4()
+  exports.Matrix4.__m1 = new Matrix4()
+  exports.Matrix4.__m2 = new Matrix4()

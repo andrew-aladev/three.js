@@ -1,9 +1,19 @@
+# @author Tim Knip / http://www.floorplanner.com/ / tim at floorplanner.com
+# @author aladjev.andrew@gmail.com
+
+#= require new_src/core/matrix_4
+#= require new_src/loaders/collada/transform
+#= require new_src/loaders/collada/instance_geometry
+#= require new_src/loaders/collada/instance_controller
+#= require new_src/loaders/collada/instance_camera
+
 class Node
-  constructor: ->
+  constructor: (loader) ->
     @id     = ""
     @name   = ""
     @sid    = ""
     @nodes  = []
+    @loader = loader
     @controllers  = []
     @transforms   = []
     @geometries   = []
@@ -92,25 +102,25 @@ class Node
         continue
       switch child.nodeName
         when "node"
-          @nodes.push       new Node().parse child
+          @nodes.push       new Node(@loader).parse child
         when "instance_camera"
-          @cameras.push     new InstanceCamera().parse child
+          @cameras.push     new THREE.Collada.InstanceCamera().parse child
         when "instance_controller"
-          @controllers.push new InstanceController().parse child
+          @controllers.push new THREE.Collada.InstanceController(@loader).parse child
         when "instance_geometry"
-          @geometries.push  new InstanceGeometry().parse child
+          @geometries.push  new THREE.Collada.InstanceGeometry(@loader).parse child
         when "instance_light", "instance_node"
           url   = child.getAttribute("url").replace /^#/, ""
-          iNode = getLibraryNode url
+          iNode = @loader.getLibraryNode url
           if iNode
-            @nodes.push new Node().parse iNode
+            @nodes.push new Node(@loader).parse iNode
         when "rotate", "translate", "scale", "matrix", "lookat", "skew"
-          @transforms.push new Transform().parse child
+          @transforms.push new THREE.Collada.Transform(@loader).parse child
         else
-          console.log child.nodeName
+          console.warn child.nodeName
 
-    @channels = getChannelsForNode this
-    bakeAnimations this
+    @channels = @loader.getChannelsForNode this
+    @loader.bakeAnimations this
     @updateMatrix()
     this
 

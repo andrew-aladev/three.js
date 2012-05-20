@@ -1,3 +1,9 @@
+# @author Tim Knip / http://www.floorplanner.com/ / tim at floorplanner.com
+# @author aladjev.andrew@gmail.com
+
+#= require new_src/core/geometry
+#= require new_src/loaders/collada/input
+
 class Polygons
   constructor: ->
     @material = ""
@@ -15,18 +21,18 @@ class Polygons
 
   parse: (element) ->
     @material = element.getAttribute "material"
-    @count    = _attr_as_int element, "count", 0
+    @count    = THREE.ColladaLoader._attr_as_int element, "count", 0
 
     length = element.childNodes.length
     for i in [0...length]
       child = element.childNodes[i]
       switch child.nodeName
         when "input"
-          @inputs.push new Input().parse(element.childNodes[i])
+          @inputs.push new THREE.Collada.Input().parse(element.childNodes[i])
         when "vcount"
-          @vcount = _ints child.textContent
+          @vcount = THREE.ColladaLoader._ints child.textContent
         when "p"
-          @p.push _ints child.textContent
+          @p.push THREE.ColladaLoader._ints child.textContent
         when "ph"
           console.warn "polygon holes not yet supported!"
     this

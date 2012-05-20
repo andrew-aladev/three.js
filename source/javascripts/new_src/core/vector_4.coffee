@@ -9,7 +9,7 @@ class Vector4
     @x = x or 0
     @y = y or 0
     @z = z or 0
-    @w = (if (w isnt `undefined`) then w else 1)
+    @w = (if (w isnt undefined) then w else 1)
 
   set: (x, y, z, w) ->
     @x = x
@@ -22,7 +22,7 @@ class Vector4
     @x = v.x
     @y = v.y
     @z = v.z
-    @w = (if (v.w isnt `undefined`) then v.w else 1)
+    @w = (if (v.w isnt undefined) then v.w else 1)
     this
 
   add: (a, b) ->
@@ -99,7 +99,7 @@ class Vector4
     this
 
   clone: ->
-    new THREE.Vector4(@x, @y, @z, @w)
+    new Vector4 @x, @y, @z, @w
     
 namespace "THREE", (exports) ->
   exports.Vector4 = Vector4

@@ -1,3 +1,8 @@
+# @author Tim Knip / http://www.floorplanner.com/ / tim at floorplanner.com
+# @author aladjev.andrew@gmail.com
+
+#= require new_src/core/color
+
 class ColorOrTexture
   constructor: ->
     @color    = new THREE.Color(0)
@@ -21,7 +26,7 @@ class ColorOrTexture
         continue
       switch child.nodeName
         when "color"
-          rgba    = _floats child.textContent
+          rgba    = THREE.ColladaLoader._floats child.textContent
           @color  = new THREE.Color(0)
           @color.setRGB rgba[0], rgba[1], rgba[2]
           @color.a = rgba[3]

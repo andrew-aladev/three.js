@@ -3,11 +3,15 @@
 # @author alteredq / http://alteredqualia.com/
 # @author aladjev.andrew@gmail.com
 
+#= require new_src/core/matrix_4
+#= require new_src/core/vector_3
+#= require new_src/core/quaternion
+
 class Object3D
   constructor: ->
     @id           = THREE.Object3DCount++
     @name         = ""
-    @parent       = `undefined`
+    @parent       = undefined
     @children     = []
     @up           = new THREE.Vector3(0, 1, 0)
     @position     = new THREE.Vector3()
@@ -62,26 +66,26 @@ class Object3D
     if object is this
       console.warn "THREE.Object3D.add: An object can't be added as a child of itself."
       return
-    if object instanceof THREE.Object3D
-      object.parent.remove object  if object.parent isnt `undefined`
+    if object instanceof Object3D
+      object.parent.remove object  if object.parent isnt undefined
       object.parent = this
       @children.push object
       
       # add to scene
       scene = this
-      scene = scene.parent  while scene.parent isnt `undefined`
-      scene.__addObject object  if scene isnt `undefined` and scene instanceof THREE.Scene
+      scene = scene.parent  while scene.parent isnt undefined
+      scene.__addObject object  if scene isnt undefined and scene instanceof THREE.Scene
 
   remove: (object) ->
     index = @children.indexOf(object)
     if index isnt -1
-      object.parent = `undefined`
+      object.parent = undefined
       @children.splice index, 1
       
       # remove from scene
       scene = this
-      scene = scene.parent  while scene.parent isnt `undefined`
-      scene.__removeObject object  if scene isnt `undefined` and scene instanceof THREE.Scene
+      scene = scene.parent  while scene.parent isnt undefined
+      scene.__removeObject object  if scene isnt undefined and scene instanceof THREE.Scene
 
   getChildByName: (name, recursive) ->
     c = undefined
@@ -95,9 +99,9 @@ class Object3D
       return child  if child.name is name
       if recursive
         child = child.getChildByName(name, recursive)
-        return child  if child isnt `undefined`
+        return child  if child isnt undefined
       c++
-    `undefined`
+    undefined
 
   updateMatrix: ->
     @matrix.setPosition @position

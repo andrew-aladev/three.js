@@ -1,13 +1,12 @@
 # @author mikael emtinger / http://gomo.se/
 # @author alteredq / http://alteredqualia.com/
 
-
 class Quaternion
   constructor: (x, y, z, w) ->
     @x = x or 0
     @y = y or 0
     @z = z or 0
-    @w = (if (w isnt `undefined`) then w else 1)
+    @w = (if (w isnt undefined) then w else 1)
 
   set: (x, y, z, w) ->
     @x = x
@@ -145,7 +144,7 @@ class Quaternion
     dest
 
   clone: ->
-    new THREE.Quaternion(@x, @y, @z, @w)
+    new Quaternion @x, @y, @z, @w
 
   @slerp = (qa, qb, qm, t) ->
     # http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/slerp/

@@ -7,7 +7,7 @@ class Color
   b: 1
   
   constructor: (hex) ->
-    @setHex hex  if hex isnt `undefined`
+    @setHex hex  if hex isnt undefined
     this
   
   copy: (color) ->
@@ -53,19 +53,14 @@ class Color
     # based on MochiKit implementation by Bob Ippolito
     # h,s,v ranges are < 0.0 - 1.0 >
   
-    i = undefined
-    f = undefined
-    p = undefined
-    q = undefined
-    t = undefined
     if v is 0
       @r = @g = @b = 0
     else
-      i = Math.floor(h * 6)
-      f = (h * 6) - i
+      i = Math.floor h * 6
+      f = h * 6 - i
       p = v * (1 - s)
-      q = v * (1 - (s * f))
-      t = v * (1 - (s * (1 - f)))
+      q = v * (1 - s * f)
+      t = v * (1 - s * (1 - f))
       switch i
         when 1
           @r = q
@@ -95,9 +90,9 @@ class Color
 
   setHex: (hex) ->
     hex = Math.floor(hex)
-    @r = (hex >> 16 & 255) / 255
-    @g = (hex >> 8 & 255) / 255
-    @b = (hex & 255) / 255
+    @r  = (hex >> 16 & 255) / 255
+    @g  = (hex >> 8 & 255) / 255
+    @b  = (hex & 255) / 255
     this
 
   lerpSelf: (color, alpha) ->
@@ -113,7 +108,7 @@ class Color
     "rgb(" + Math.floor(@r * 255) + "," + Math.floor(@g * 255) + "," + Math.floor(@b * 255) + ")"
 
   clone: ->
-    new THREE.Color().setRGB @r, @g, @b
+    new Color().setRGB @r, @g, @b
     
 namespace "THREE", (exports) ->
   exports.Color = Color

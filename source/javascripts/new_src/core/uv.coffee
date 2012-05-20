@@ -22,7 +22,7 @@ class UV
     this
 
   clone: ->
-    new THREE.UV(@u, @v)
+    new UV @u, @v
     
 namespace "THREE", (exports) ->
   exports.UV = UV
