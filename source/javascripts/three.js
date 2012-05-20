@@ -25,20 +25,21 @@
 //= require new_src/core/spline
 
 //= require new_src/cameras/camera
-//= require new_src/cameras/orthographic_camera
-//= require new_src/cameras/perspective_camera
+//= require new_src/cameras/orthographic
+//= require new_src/cameras/perspective
 
 //= require new_src/lights/light
-//= require new_src/lights/ambient_light
-//= require new_src/lights/directional_light
-//= require new_src/lights/point_light
-//= require new_src/lights/spot_light
+//= require new_src/lights/ambient
+//= require new_src/lights/directional
+//= require new_src/lights/point
+//= require new_src/lights/spot
 
 //= require new_src/loaders/loader
-//= require new_src/loaders/binary_loader
+//= require new_src/loaders/binary
+//= require new_src/loaders/json
+//= require new_src/loaders/scene
+//= require new_src/loaders/collada
 
-//= require original_src/loaders/JSONLoader
-//= require original_src/loaders/SceneLoader
 //= require original_src/materials/Material
 //= require original_src/materials/LineBasicMaterial
 //= require original_src/materials/MeshBasicMaterial
